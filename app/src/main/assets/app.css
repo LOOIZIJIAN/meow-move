@@ -1,0 +1,86 @@
+@font-face{font-family:Nunito;src:url('nunito.woff2') format('woff2');font-weight:200 900;font-display:swap}
+html,body{margin:0;padding:0;background:#f9ecd2;color:#3f443d;min-height:100%;font-family:Nunito,sans-serif;-webkit-tap-highlight-color:transparent}
+#meow-product .mf-app{max-width:600px;width:100%;margin:auto;border:0;border-radius:0;box-shadow:none;min-height:100vh;overflow:visible;--mf-radius:28px;background:linear-gradient(165deg,#fbeed6,#f7e6c9 55%,#f8edd6)}
+#meow-product .mf-content{padding:18px 20px 116px}
+#meow-product .mf-top{margin:0 0 20px}
+#meow-product .mf-nav{position:fixed;bottom:9px;left:50%;transform:translateX(-50%);width:calc(100% - 22px);max-width:574px;margin:0;z-index:20}
+#meow-product button{touch-action:manipulation;user-select:none}
+#meow-product button:focus-visible,#meow-product input:focus-visible,#meow-product select:focus-visible,#meow-product textarea:focus-visible{outline:2px solid #7f683c;outline-offset:3px}
+#meow-product .mf-section-head h3{white-space:normal}
+#meow-product .mf-cloud-button{max-width:145px}
+#meow-product .mf-split-switch button,#meow-product .mf-text-button,#meow-product .mf-type-row button{min-height:44px!important}
+#meow-product .mf-steppers button{width:44px;height:44px;min-height:44px}
+#meow-product .mf-exercise-history{display:block;margin-top:3px}
+#meow-product .mf-secondary{display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(#fffbea,#fff0d0)!important;border:1px solid #f2dfb7!important;border-radius:17px!important;box-shadow:var(--mf-raised);font-size:12px!important;min-height:47px!important;padding:10px 12px!important;font-weight:700}
+#meow-product .mf-inline-actions{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
+#meow-product .mf-inline-actions>*{flex:1}
+#meow-product .mf-inline-actions .mf-primary{margin:0}
+#meow-product .mf-session-chips{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+#meow-product .mf-session-chips button{border:1px solid #e9d9b6;background:#fff7df;border-radius:13px;padding:8px 11px;font-size:11px;min-height:44px;max-width:100%;white-space:normal;box-shadow:var(--mf-raised)}
+#meow-product .mf-session-chips button[aria-pressed=true]{background:#ffdba0;border-color:#c3a16c;color:#684c2b;box-shadow:inset 0 2px 2px #a07c3920,0 1px 0 #ffffed}
+#meow-product .mf-session-heading{flex:1}
+#meow-product .mf-session-heading small{font-size:11px}
+#meow-product .mf-back-head{gap:9px}
+#meow-product .mf-back-head .mf-text-button{max-width:104px;font-size:12px!important;color:#a74741!important}
+#meow-product .mf-hint{padding:11px 12px;background:#fff4d8;border-radius:15px;color:#6d624f;font-size:12px;line-height:1.65;margin:12px 0;overflow-wrap:anywhere}
+#meow-product .mf-source-sets{padding:12px;margin:10px 0;border-radius:18px;background:#f5e7ca;font-size:12px;line-height:1.8}
+#meow-product .mf-source-sets p{margin:5px 0;overflow-wrap:anywhere}
+#meow-product .mf-entry-title{font-size:13px}
+#meow-product .mf-type-row{gap:3px}
+#meow-product .mf-type-row button{font-size:11px}
+#meow-product .mf-set-table td{font-size:12px;padding:10px 7px;max-width:120px;overflow-wrap:anywhere}
+#meow-product .mf-set-table td:last-child{color:#4c6c48}
+#meow-product .mf-set-table button{padding:5px;background:#fff3d8;border:1px solid #e3cfa7;border-radius:11px;min-width:44px;min-height:44px;color:#675638;font-size:11px}
+#meow-product .mf-edit-row td{background:#e7efd9}
+#meow-product .mf-note-input{margin-top:7px;font-family:Nunito,sans-serif;font-size:16px}
+#meow-product .mf-number-box input{min-height:66px}
+#meow-product .mf-select{font:700 16px Nunito,sans-serif;color:#514d3e;background:#fff7e2;border:1px solid #e4d5b5;box-shadow:inset 0 2px 4px #8c724318;border-radius:13px;min-height:44px;max-width:100%;padding:9px 11px;width:100%;margin:8px 0}
+#meow-product .mf-field{display:block;margin:13px 0;font-size:12px;font-weight:700;line-height:1.7}
+#meow-product .mf-field input,#meow-product .mf-field textarea{display:block;width:100%;min-height:44px;padding:10px 12px;font:16px Nunito,sans-serif;color:#4c473a;background:#fff8e5;border:1px solid #e7d5b3;border-radius:13px;margin-top:6px;box-shadow:inset 0 2px 4px #866e4012}
+#meow-product .mf-date-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+#meow-product .mf-date-grid input{min-width:0;font-size:14px}
+#meow-product .mf-history-list{display:grid;gap:13px;margin:16px 0}
+#meow-product .mf-history-card{width:100%;padding:15px!important;border-radius:23px;border:1px solid #f2e5c9!important;background:linear-gradient(#fff9e8,#fff3d9)!important;box-shadow:var(--mf-soft);text-align:left;display:flex;align-items:center;gap:12px}
+#meow-product .mf-history-date{min-width:42px;font-size:23px;font-weight:900;color:#986942;line-height:1.1}
+#meow-product .mf-history-date small{display:block;font-size:11px;margin-top:5px}
+#meow-product .mf-history-title{font-size:14px;font-weight:800;display:block;line-height:1.5}
+#meow-product .mf-history-meta{font-size:11px;color:#756b58;display:block;margin-top:4px;line-height:1.7}
+#meow-product .mf-detail h2{font-size:19px;line-height:1.5;margin:8px 0;overflow-wrap:anywhere}
+#meow-product .mf-detail-row{font-size:13px;line-height:1.7;padding:10px 0;border-bottom:1px solid #eaddbd;overflow-wrap:anywhere}
+#meow-product .mf-raw-note{font:13px/1.8 Nunito,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;background:#fff9e8;padding:15px;border-radius:18px;border:1px solid #e7d8b9}
+#meow-product .mf-badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
+#meow-product .mf-achievement{border-radius:21px;background:#fff6dd;border:1px solid #ebdcbc;padding:14px;text-align:center;box-shadow:var(--mf-raised)}
+#meow-product .mf-achievement .mf-badge-icon{margin:0 auto 12px}
+#meow-product .mf-achievement strong{font-size:12px;display:block}
+#meow-product .mf-achievement.is-locked{opacity:.65}
+#meow-product .mf-costume{position:relative;display:inline-block}
+#meow-product .mf-costume[data-costume="star"]:after{content:'★';position:absolute;right:8px;top:14px;font-size:35px;color:#a16a23;text-shadow:0 2px 0 #ffe69e}
+#meow-product .mf-costume[data-costume="crown"]:after{content:'♛';position:absolute;left:50%;top:-3px;transform:translateX(-50%);font-size:44px;color:#b98a26;text-shadow:0 2px 0 #fff4bf}
+#meow-product .mf-costume img{display:block}
+#meow-product .mf-goal-label{gap:12px}
+#meow-product .mf-stat-icon{width:38px!important;height:41px!important}
+#meow-product .mf-report-panel h3{font-size:15px}
+#meow-product .mf-check{display:flex;align-items:center;gap:10px;min-height:48px;font-size:13px;line-height:1.5}
+#meow-product .mf-check input{width:22px;height:22px;accent-color:#67915a;flex-shrink:0}
+#meow-product .mf-empty{text-align:center;padding:25px 10px;font-size:13px;color:#796c56;line-height:1.9}
+#meow-product .mf-overlay{position:fixed;inset:0;background:#4b40296b;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}
+#meow-product .mf-dialog{background:#fff4dc;border:2px solid #fff9e6;border-radius:28px;padding:20px;box-shadow:0 15px 40px #48361545;width:100%;max-width:480px;max-height:calc(100dvh - 40px);overflow-y:auto}
+#meow-product .mf-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+#meow-product .mf-dialog h2{font-size:19px;line-height:1.4;margin:0}
+#meow-product .mf-dialog-head button{background:#f5e4c3;border:1px solid #e0cba3;border-radius:13px;width:44px;min-height:44px}
+#meow-product .mf-dialog p{font-size:13px;line-height:1.8;overflow-wrap:anywhere}
+#meow-product .mf-library-item{display:flex;width:100%;align-items:center;gap:10px;border-radius:16px;background:#fff9e9;border:1px solid #eddfc3;padding:12px;text-align:left;margin:10px 0;box-shadow:var(--mf-raised);min-height:57px}
+#meow-product .mf-library-item>span{flex:1;min-width:0;font-size:13px;overflow-wrap:anywhere}
+#meow-product .mf-library-item small{font-size:11px;color:#7a6c56;display:block}
+#meow-product .mf-dialog-error{color:#9a3f31;font-size:12px;line-height:1.7}
+#meow-product .mf-dialog .mf-inline-actions{margin-bottom:4px}
+#meow-product .mf-search{margin:4px 0 12px!important}
+#meow-product .mf-breakdown{font-size:12px;gap:8px}
+#meow-product .mf-breakdown-track{height:9px;background:#ebddbe}
+#meow-product .mf-chart{height:auto;min-height:140px}
+#meow-product .mf-summary-number{font:900 32px/1.3 Nunito,sans-serif}
+#meow-product .mf-summary-number small{font-size:12px;font-weight:600;color:#756b58}
+#meow-product .mf-undo-button{font-size:12px;background:#fff4d5;padding:9px 13px;border-radius:13px;border:1px solid #e7d2a9;min-height:44px}
+#toast{position:fixed;z-index:90;bottom:106px;left:50%;transform:translateX(-50%);max-width:calc(100% - 40px);background:#414839;color:#fff9e8;font:700 13px/1.7 Nunito,sans-serif;border-radius:17px;padding:12px 17px;box-shadow:0 6px 18px #48381730;display:none;pointer-events:none}
+@media(max-width:360px){#meow-product .mf-content{padding:16px 14px 114px}#meow-product .mf-number-box{padding:12px 7px 10px}#meow-product .mf-steppers{gap:5px}#meow-product .mf-type-row button{padding:7px 3px}#meow-product .mf-stat{padding:12px 7px;gap:7px}#meow-product .mf-stat-icon{width:30px!important;height:36px!important}#meow-product .mf-cloud-button{padding:7px 9px!important}#meow-product .mf-hero-copy{width:53%}#meow-product .mf-greeting{font-size:24px}}
+@media(prefers-reduced-motion:reduce){#meow-product *{transition:none!important;animation:none!important}}

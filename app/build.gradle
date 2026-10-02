@@ -1,0 +1,22 @@
+plugins { id 'com.android.application' }
+def personalSigning = new Properties()
+def signingFile = rootProject.file('signing/signing.properties')
+if (signingFile.exists()) signingFile.withInputStream { personalSigning.load(it) }
+android {
+    namespace 'app.meowmove'
+    compileSdk 36
+    defaultConfig { applicationId 'app.meowmove'; minSdk 28; targetSdk 36; versionCode 1; versionName '1.0.0' }
+    buildFeatures { buildConfig true }
+    signingConfigs {
+        personal {
+            if (signingFile.exists()) {
+                storeFile rootProject.file('signing/meow-move.jks')
+                storePassword personalSigning.getProperty('storePassword')
+                keyAlias 'meow-move'
+                keyPassword personalSigning.getProperty('keyPassword')
+            }
+        }
+    }
+    buildTypes { release { minifyEnabled false; signingConfig signingFile.exists() ? signingConfigs.personal : signingConfigs.debug } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
