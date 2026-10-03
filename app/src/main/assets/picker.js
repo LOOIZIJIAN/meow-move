@@ -51,6 +51,7 @@ function open(root,select,button){
   if(!event.target.matches('input'))return;
   event.stopPropagation();const query=normalize(event.target.value);
   overlay.querySelectorAll('.mf-picker-option').forEach(option=>option.hidden=!normalize(option.textContent).includes(query));
+  overlay.querySelector('.mf-picker-options').scrollTop=0;
   overlay.querySelector('.mf-picker-clear').hidden=!query;
   overlay.querySelector('.mf-picker-empty').hidden=Boolean(overlay.querySelector('.mf-picker-option:not([hidden])'));
  });
