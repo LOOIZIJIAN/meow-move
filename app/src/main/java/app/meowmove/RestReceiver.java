@@ -5,27 +5,35 @@ import android.content.*;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.os.*;
-import org.json.JSONObject;
+import org.json.*;
 
 public class RestReceiver extends BroadcastReceiver {
     static final String CHANGED="app.meowmove.REST_CHANGED";
     private static PendingIntent pending(Context c,String cycle){return PendingIntent.getBroadcast(c,10,new Intent(c,RestReceiver.class).putExtra("cycle",cycle),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);}
     private static PendingIntent action(Context c,String cycle,String action,int code){return PendingIntent.getBroadcast(c,code,new Intent(c,RestReceiver.class).setAction(action).putExtra("cycle",cycle),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);}
     private static PendingIntent open(Context c){return PendingIntent.getActivity(c,0,new Intent(c,MainActivity.class).putExtra("openTimer",true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);}
-    private static void progress(Context c,JSONObject timer,JSONObject prefs){
+    // Last posted timer state; saves from the page call sync() often and re-posting would refresh the island for nothing.
+    private static String shown;
+    private static void progress(Context c,JSONObject timer,JSONObject prefs)throws JSONException{
         NotificationManager manager=(NotificationManager)c.getSystemService(Context.NOTIFICATION_SERVICE);
         String status=timer.optString("status");boolean running="running".equals(status),paused="paused".equals(status);
-        if(!prefs.optBoolean("restNotifications",false)||!manager.areNotificationsEnabled()||(!running&&!paused)){manager.cancel(11);return;}
+        if(!prefs.optBoolean("restNotifications",false)||!manager.areNotificationsEnabled()||(!running&&!paused)){manager.cancel(11);shown=null;return;}
+        String key=status+"|"+timer.optString("cycleId")+"|"+timer.optLong("endAt")+"|"+timer.optLong("remainingMs");
+        if(key.equals(shown))for(android.service.notification.StatusBarNotification n:manager.getActiveNotifications())if(n.getId()==11)return;
         NotificationChannel channel=new NotificationChannel("rest-progress","休息计时控制",NotificationManager.IMPORTANCE_LOW);channel.setSound(null,null);manager.createNotificationChannel(channel);
         long ms=running?Math.max(0,timer.optLong("endAt")-System.currentTimeMillis()):timer.optLong("remainingMs");
         String cycle=timer.optString("cycleId"),time=String.format(java.util.Locale.ROOT,"%02d:%02d",(ms+999)/60000,((ms+999)/1000)%60);
+        PendingIntent toggle=action(c,cycle,running?"pause":"resume",12),extend=action(c,cycle,"extend",13),reset=action(c,cycle,"reset",14);
         Notification.Builder builder=new Notification.Builder(c,"rest-progress").setSmallIcon(R.drawable.ic_rest).setContentTitle("喵练 · "+(paused?"休息已暂停":"组间休息"))
             .setContentText(paused?"剩余 "+time:"休息好，再开始下一组。").setContentIntent(open(c)).setOnlyAlertOnce(true).setOngoing(true)
-            .addAction(new Notification.Action.Builder(null,running?"暂停":"继续",action(c,cycle,running?"pause":"resume",12)).build())
-            .addAction(new Notification.Action.Builder(null,"+15秒",action(c,cycle,"extend",13)).build())
-            .addAction(new Notification.Action.Builder(null,"结束休息",action(c,cycle,"reset",14)).build());
+            .addAction(new Notification.Action.Builder(null,running?"暂停":"继续",toggle).build())
+            .addAction(new Notification.Action.Builder(null,"+15秒",extend).build())
+            .addAction(new Notification.Action.Builder(null,"结束休息",reset).build());
         if(running)builder.setWhen(timer.optLong("endAt")).setUsesChronometer(true).setChronometerCountDown(true);
-        manager.notify(11,builder.build());
+        // HyperOS 3 shows the focus payload on Hyper Island; elsewhere Android 16+ can promote it to a Live Update chip.
+        if(Island.supported(c))Island.apply(c,builder,running,timer.optLong("endAt"),time,toggle,extend,reset);
+        else{Bundle live=new Bundle();live.putBoolean("android.requestPromotedOngoing",true);builder.addExtras(live);}
+        manager.notify(11,builder.build());shown=key;
     }
     static void sync(Context c,boolean force)throws Exception{
         JSONObject data=new JSONObject(Store.get(c).load()),timer=data.optJSONObject("restTimer");if(timer==null)return;
@@ -36,7 +44,10 @@ public class RestReceiver extends BroadcastReceiver {
         if(!"running".equals(status)||end==0){alarms.cancel(pending(c,cycle));p.edit().clear().apply();if(!"done".equals(status))((NotificationManager)c.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(10);return;}
         if(!force&&end==p.getLong("endAt",0)&&cycle.equals(p.getString("cycle","")))return;
         alarms.cancel(pending(c,cycle));((NotificationManager)c.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(10);
-        alarms.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,SystemClock.elapsedRealtime()+Math.max(0,end-System.currentTimeMillis()),pending(c,cycle));
+        // Exact so the island leaves 00:00 on time; inexact alarms ran ~50s late on HyperOS even with the screen on.
+        long at=SystemClock.elapsedRealtime()+Math.max(0,end-System.currentTimeMillis());
+        if(Build.VERSION.SDK_INT<31||alarms.canScheduleExactAlarms())alarms.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,at,pending(c,cycle));
+        else alarms.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,at,pending(c,cycle));
         p.edit().putLong("endAt",end).putString("cycle",cycle).apply();
     }
     public void onReceive(Context c,Intent intent){try{
