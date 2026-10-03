@@ -1,5 +1,6 @@
 (function(global){
 'use strict';
+const Timer=typeof module!=='undefined'&&module.exports?require('./timer.js'):global.MeowTimer;
 const MUSCLES=['胸','背','腿','肩','二头','三头','臀','小腿','核心'];
 const SPLITS={three:[{name:'推日',muscles:['胸','肩','三头']},{name:'拉日',muscles:['背','二头']},{name:'腿日',muscles:['腿','臀','小腿']}],five:[{name:'胸',muscles:['胸']},{name:'背',muscles:['背']},{name:'腿',muscles:['腿','臀','小腿']},{name:'肩',muscles:['肩']},{name:'手臂',muscles:['二头','三头']}]};
 const clone=v=>JSON.parse(JSON.stringify(v));
@@ -8,7 +9,7 @@ const id=()=>global.crypto?.randomUUID?.()||`${Date.now().toString(36)}-${Math.r
 const day=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const norm=s=>String(s).normalize('NFKC').trim().toLowerCase().replace(/\s+/g,' ');
 const exerciseId=name=>'ex-'+hash(norm(name));
-function blank(){return {app:'meow-move',schema:1,catalog:[],sessions:[],sources:[],preferences:{split:'three',muscles:['胸','肩','三头'],weeklyGoal:3,costume:'classic',restNotifications:false},active:null};}
+function blank(){return {app:'meow-move',schema:1,catalog:[],sessions:[],sources:[],preferences:{split:'three',muscles:['胸','肩','三头'],weeklyGoal:3,costume:'classic',restNotifications:false},restTimer:Timer.blank(),active:null};}
 function parseSet(raw){
  const line=raw.replace(/^\d+[.、)]\s*/,'').replace(/，/g,',').trim();
  const kg=line.match(/(\d+(?:\.\d+)?)\s*kg/i),num=line.match(/(\d+(?:\.\d+)?)\s*(?:\([^)]*\))?\s*\*/);
@@ -54,9 +55,9 @@ function select(state,eid){if(!state.active)begin(state,state.preferences.muscle
 function complete(state){const a=state.active;if(!a||!a.currentExerciseId)throw Error('请先选择动作');const d=a.draft;
  if(!['recorded','total','side','body'].includes(d.kind)||d.reps===''||!Number.isInteger(Number(d.reps))||Number(d.reps)<1||Number(d.reps)>1000||(d.kind!=='body'&&(d.weight===''||!Number.isFinite(Number(d.weight))||Number(d.weight)<0||Number(d.weight)>5000))||!Number.isFinite(Number(d.restSec))||Number(d.restSec)<0||Number(d.restSec)>3600)throw Error('请填写有效的重量、次数与休息时间');
  const s={id:id(),weight:d.kind==='body'?null:Number(d.weight),unit:d.kind==='body'?null:'kg',reps:Number(d.reps),kind:d.kind,restSec:Number(d.restSec),feeling:d.feeling||'',note:d.note||'',variant:d.variant||'',complex:false,sideReps:null,raw:null,recordedAt:Date.now()};
- a.exercises.find(e=>e.exerciseId===a.currentExerciseId).sets.push(s);a.restUntil=Date.now()+s.restSec*1000;a.draft=draft(state,a.currentExerciseId);if(a.drafts)a.drafts[a.currentExerciseId]=clone(a.draft);return s;
+ a.exercises.find(e=>e.exerciseId===a.currentExerciseId).sets.push(s);state.restTimer=s.restSec>0?Timer.start(state.restTimer||Timer.blank(),s.restSec,Date.now(),a.id):Timer.reset(state.restTimer||Timer.blank());a.restUntil=state.restTimer.endAt;a.draft=draft(state,a.currentExerciseId);if(a.drafts)a.drafts[a.currentExerciseId]=clone(a.draft);return s;
 }
-function finish(state){const a=state.active;if(!a)throw Error('没有正在进行的训练');const entries=a.exercises.filter(e=>e.sets.length);if(!entries.length)throw Error('先记录至少一组，或放弃这次空训练');const result={...clone(a),exercises:entries,endedAt:Date.now()};delete result.currentExerciseId;delete result.draft;delete result.drafts;delete result.restUntil;state.sessions.push(result);state.active=null;return result;}
+function finish(state){const a=state.active;if(!a)throw Error('没有正在进行的训练');const entries=a.exercises.filter(e=>e.sets.length);if(!entries.length)throw Error('先记录至少一组，或放弃这次空训练');const result={...clone(a),exercises:entries,endedAt:Date.now()};delete result.currentExerciseId;delete result.draft;delete result.drafts;delete result.restUntil;state.sessions.push(result);if(state.restTimer?.sessionId===a.id)state.restTimer=Timer.reset(state.restTimer);state.active=null;return result;}
 function weekStart(now=new Date()){const n=new Date(now.getFullYear(),now.getMonth(),now.getDate());n.setDate(n.getDate()-((n.getDay()+6)%7));return day(n);}
 function weekly(state,now=new Date()){const from=weekStart(now),to=day(now);return state.sessions.filter(s=>s.date>=from&&s.date<=to).length;}
 function stats(state,from='',to='9999-12-31'){const sessions=state.sessions.filter(s=>s.date>=from&&s.date<=to),muscles={};let sets=0;for(const s of sessions)for(const entry of s.exercises){sets+=entry.sets.length;const m=state.catalog.find(e=>e.id===entry.exerciseId)?.muscle||'其他';muscles[m]=(muscles[m]||0)+entry.sets.length;}return {sessions:sessions.length,sets,muscles};}
@@ -69,6 +70,7 @@ function exportMarkdown(state,from='',to='9999-12-31'){const rows=[`# 喵练 · 
 function csvCell(v){let s=String(v??'');if(/^[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
 function exportCsv(state,from='',to='9999-12-31'){const rows=[['日期','训练','动作','肌群','组','重量','单位','重量方式','握法','次数','右侧次数','左侧次数','休息秒','感受','备注','复杂组原文']];for(const s of state.sessions.filter(s=>s.date>=from&&s.date<=to))for(const e of s.exercises){const c=state.catalog.find(c=>c.id===e.exerciseId);e.sets.forEach((x,i)=>rows.push([s.date,s.title,c?.name||'',c?.muscle||'',i+1,x.weight,x.unit,kindName(x.kind),x.variant,x.reps,x.sideReps?.right,x.sideReps?.left,x.restSec,x.feeling,[e.note,x.note,s.note].filter(Boolean).join('；'),x.raw||'']));}return '\uFEFF'+rows.map(row=>row.map(csvCell).join(',')).join('\r\n');}
 function validate(v){if(!v||v.app!=='meow-move'||v.schema!==1||!Array.isArray(v.catalog)||!Array.isArray(v.sessions)||!Array.isArray(v.sources)||!v.preferences)throw Error('不是支持的喵练备份文件');if(v.sessions.length>100000||v.catalog.length>10000)throw Error('备份内容过大');
+ if(v.restTimer)Timer.validate(v.restTimer);
  const ids=new Set();for(const e of v.catalog){if(typeof e.id!=='string'||typeof e.name!=='string'||!e.name.trim()||!MUSCLES.includes(e.muscle)||ids.has(e.id))throw Error('动作目录无效');ids.add(e.id);}
  for(const source of v.sources)if(typeof source.id!=='string'||typeof source.raw!=='string'||typeof source.title!=='string')throw Error('原始笔记格式无效');
  const sids=new Set();for(const s of [...v.sessions,...(v.active?[v.active]:[])]){if(typeof s.id!=='string'||sids.has(s.id)||typeof s.title!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s.date)||day(new Date(s.date+'T12:00:00'))!==s.date||!Array.isArray(s.exercises)||!Array.isArray(s.muscles)||!s.muscles.every(m=>MUSCLES.includes(m)))throw Error('训练内容无效');sids.add(s.id);for(const e of s.exercises){if(!ids.has(e.exerciseId)||!Array.isArray(e.sets))throw Error('训练动作无效');for(const x of e.sets)if((x.weight!=null&&(!Number.isFinite(x.weight)||x.weight<0))||(x.reps!=null&&(!Number.isInteger(x.reps)||x.reps<1))||(x.restSec!=null&&(!Number.isFinite(x.restSec)||x.restSec<0))||!['recorded','side','total','body'].includes(x.kind))throw Error('组数据无效');}}

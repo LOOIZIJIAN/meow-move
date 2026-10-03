@@ -240,5 +240,14 @@
     "costume": "classic",
     "restNotifications": false
   },
+  "restTimer": {
+    "status": "idle",
+    "durationSec": 150,
+    "remainingMs": 150000,
+    "endAt": 0,
+    "cycleId": null,
+    "sessionId": null,
+    "notified": false
+  },
   "active": null
 }

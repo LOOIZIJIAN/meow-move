@@ -20,6 +20,7 @@ import org.json.*;
 
 public class MainActivity extends Activity {
     private WebView web;
+    static volatile boolean foreground;
     private static final String ORIGIN="https://appassets.androidplatform.net/";
     private static final int BACKUP=21,EXPORT=22,IMPORT=23;
     @Override public void onCreate(Bundle state){super.onCreate(state);
@@ -34,6 +35,7 @@ public class MainActivity extends Activity {
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
         web.addJavascriptInterface(new Bridge(),"Android");
         web.setWebViewClient(new WebViewClient(){
+            @Override public void onPageFinished(WebView v,String url){if(getIntent().getBooleanExtra("openTimer",false))v.evaluateJavascript("window.openRestTimer&&window.openRestTimer()",null);}
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){return true;}
             @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest r){
                 String url=r.getUrl().toString();if(!url.startsWith(ORIGIN+"assets/"))return blocked();
@@ -45,7 +47,9 @@ public class MainActivity extends Activity {
         web.setWebChromeClient(new WebChromeClient());web.loadUrl(ORIGIN+"assets/index.html");
         if(Build.VERSION.SDK_INT>=33)getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,()->handleBack());
     }
-    @Override protected void onResume(){super.onResume();Backup.kick(this);if(web!=null)web.postDelayed(()->web.evaluateJavascript("window.nativeResume&&window.nativeResume()",null),250);}
+    @Override protected void onResume(){super.onResume();foreground=true;try{RestReceiver.sync(this,true);}catch(Exception ignored){}Backup.kick(this);if(web!=null)web.postDelayed(()->web.evaluateJavascript("window.nativeResume&&window.nativeResume()",null),250);}
+    @Override protected void onPause(){foreground=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);super.onPause();}
+    @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(intent.getBooleanExtra("openTimer",false))web.evaluateJavascript("window.openRestTimer&&window.openRestTimer()",null);}
     private void handleBack(){web.evaluateJavascript("window.appBack&&window.appBack()",result->{if("false".equals(result))finish();});}
     @Override public boolean onKeyUp(int keyCode,KeyEvent event){if(Build.VERSION.SDK_INT<33&&keyCode==KeyEvent.KEYCODE_BACK){handleBack();return true;}return super.onKeyUp(keyCode,event);}
     private void event(JSONObject data){runOnUiThread(()->{if(!isFinishing())web.evaluateJavascript("window.nativeEvent&&window.nativeEvent("+data+")",null);});}
@@ -54,7 +58,7 @@ public class MainActivity extends Activity {
     private void picker(String action,String mime,int request,String name){Intent i=new Intent(action);i.addCategory(Intent.CATEGORY_OPENABLE);i.setType(mime);i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);if(name!=null)i.putExtra(Intent.EXTRA_TITLE,name);if(request==IMPORT)i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);try{startActivityForResult(i,request);}catch(Exception e){notice("手机没有可用的文件选择器");}}
     private final class Bridge {
         @JavascriptInterface public String load(){try{return Store.get(MainActivity.this).load();}catch(Exception e){return error(e);}}
-        @JavascriptInterface public String save(String value,boolean backupNow){try{Store store=Store.get(MainActivity.this);store.save(value);if(backupNow)try{store.snapshot();}catch(Exception ignored){}try{Backup.changed(MainActivity.this);if(backupNow)Backup.kick(MainActivity.this);}catch(Exception ignored){}return "{\"ok\":true}";}catch(Exception e){return error(e);}}
+        @JavascriptInterface public String save(String value,boolean backupNow){try{Store store=Store.get(MainActivity.this);store.save(value);try{RestReceiver.sync(MainActivity.this,false);}catch(Exception ignored){}if(backupNow)try{store.snapshot();}catch(Exception ignored){}try{Backup.changed(MainActivity.this);if(backupNow)Backup.kick(MainActivity.this);}catch(Exception ignored){}return "{\"ok\":true}";}catch(Exception e){return error(e);}}
         @JavascriptInterface public String backupStatus(){return Backup.status(MainActivity.this);}
         @JavascriptInterface public void chooseBackup(){runOnUiThread(()->picker(Intent.ACTION_CREATE_DOCUMENT,"application/json",BACKUP,"meow-move-backup.json"));}
         @JavascriptInterface public void backupNow(){Backup.changed(MainActivity.this);Backup.kick(MainActivity.this);notice("正在更新备份文件");}
@@ -67,10 +71,11 @@ public class MainActivity extends Activity {
                 else{getSharedPreferences("export",MODE_PRIVATE).edit().putString("path",f.getAbsolutePath()).putString("mime",mime).apply();runOnUiThread(()->picker(Intent.ACTION_CREATE_DOCUMENT,mime,EXPORT,name));}
             }catch(Exception e){notice("导出失败，请重试");}
         }
-        @JavascriptInterface public void startRest(int seconds){RestReceiver.start(MainActivity.this,Math.min(3600,Math.max(0,seconds)));}
-        @JavascriptInterface public void stopRest(){RestReceiver.cancel(MainActivity.this);}
+        @JavascriptInterface public boolean restNotified(String cycle){try{JSONObject timer=new JSONObject(Store.get(MainActivity.this).load()).optJSONObject("restTimer");return timer!=null&&cycle.equals(timer.optString("cycleId"))&&timer.optBoolean("notified",false);}catch(Exception ignored){return false;}}
+        @JavascriptInterface public void keepScreenOn(boolean enabled){runOnUiThread(()->{if(enabled&&foreground)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);});}
         @JavascriptInterface public void vibrate(){Vibrator v=(Vibrator)getSystemService(VIBRATOR_SERVICE);if(v!=null)v.vibrate(VibrationEffect.createOneShot(90,VibrationEffect.DEFAULT_AMPLITUDE));}
         @JavascriptInterface public boolean notificationsEnabled(){return ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).areNotificationsEnabled();}
+        @JavascriptInterface public boolean isForeground(){return foreground;}
         @JavascriptInterface public void requestNotifications(){runOnUiThread(()->{if(Build.VERSION.SDK_INT>=33&&checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},31);});}
         @JavascriptInterface public String recovery(){try{File f=new File(getFilesDir(),"recovery.json");return f.exists()?Store.read(new FileInputStream(f),20*1024*1024):"null";}catch(Exception e){return "null";}}
     }
