@@ -176,3 +176,26 @@ test('CSV escapes formula-like notes and embedded quote characters', () => {
   assert(csv.includes('contains ""quotes""'));
   assert(csv.includes('"\'=1+1"'));
 });
+
+test('renaming an exercise keeps its id, history and uniqueness', () => {
+  const state = fixture(), e = state.catalog.find(x => x.name === '杠铃卧推'), other = state.catalog.find(x => x.id !== e.id);
+  const sets = state.sessions.flatMap(s => s.exercises).filter(x => x.exerciseId === e.id).length;
+  assert.equal(M.rename(state, e.id, '  平板杠铃卧推 ', 5), true);
+  assert.equal(e.name, '平板杠铃卧推');
+  assert.equal(e.renamedAt, 5);
+  assert.equal(state.sessions.flatMap(s => s.exercises).filter(x => x.exerciseId === e.id).length, sets);
+  assert.equal(M.rename(state, e.id, '平板杠铃卧推', 6), false);
+  assert.throws(() => M.rename(state, e.id, '   '), /请填写动作名称/);
+  assert.throws(() => M.rename(state, e.id, other.name), /已有同名动作/);
+  assert.throws(() => M.rename(state, 'missing', '新名字'), /没有这个动作/);
+  M.validate(state);
+});
+
+test('restoring keeps the newer exercise name instead of failing on a rename', () => {
+  const before = fixture(), after = M.clone(before), e = after.catalog.find(x => x.name === '杠铃卧推');
+  M.rename(after, e.id, '平板杠铃卧推', 10);
+  assert.equal(M.merge(after, before).state.catalog.find(x => x.id === e.id).name, '平板杠铃卧推');
+  const restored = M.merge(before, after).state.catalog.find(x => x.id === e.id);
+  assert.equal(restored.name, '平板杠铃卧推');
+  assert.equal(restored.renamedAt, 10);
+});
