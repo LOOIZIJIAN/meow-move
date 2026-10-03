@@ -230,6 +230,13 @@
   "sessions": [],
   "sources": [],
   "goals": [],
+  "templates": [],
+  "exerciseSettings": {},
+  "pet": {
+    "ledger": [],
+    "furniture": [],
+    "modifiedAt": 0
+  },
   "preferences": {
     "split": "three",
     "muscles": [
@@ -239,7 +246,8 @@
     ],
     "weeklyGoal": 3,
     "costume": "classic",
-    "restNotifications": false
+    "restNotifications": false,
+    "restSound": false
   },
   "restTimer": {
     "status": "idle",
@@ -248,7 +256,8 @@
     "endAt": 0,
     "cycleId": null,
     "sessionId": null,
-    "notified": false
+    "notified": false,
+    "controlRevision": 0
   },
   "active": null
 }

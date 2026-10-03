@@ -20,10 +20,14 @@ import org.json.*;
 
 public class MainActivity extends Activity {
     private WebView web;
+    private boolean restRegistered;
+    private final BroadcastReceiver restChanges=new BroadcastReceiver(){public void onReceive(Context c,Intent intent){try{event(new JSONObject().put("type","restChanged"));}catch(Exception ignored){}}};
     static volatile boolean foreground;
     static boolean isVisible(Context context){return foreground&&((PowerManager)context.getSystemService(POWER_SERVICE)).isInteractive()&&!((KeyguardManager)context.getSystemService(KEYGUARD_SERVICE)).isKeyguardLocked();}
     private static final String ORIGIN="https://appassets.androidplatform.net/";
     private static final int BACKUP=21,EXPORT=22,IMPORT=23;
+    // API 28-32 uses a signature permission; the not-exported receiver flag starts at API 33.
+    @android.annotation.SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override public void onCreate(Bundle state){super.onCreate(state);
         getWindow().setStatusBarColor(Color.rgb(249,236,210));getWindow().setNavigationBarColor(Color.rgb(249,236,210));
         web=new WebView(this);web.setBackgroundColor(Color.rgb(249,236,210));
@@ -45,10 +49,12 @@ public class MainActivity extends Activity {
             }
             private WebResourceResponse blocked(){return new WebResourceResponse("text/plain","UTF-8",403,"Forbidden",Collections.emptyMap(),new ByteArrayInputStream(new byte[0]));}
         });
+        IntentFilter restFilter=new IntentFilter(RestReceiver.CHANGED);if(Build.VERSION.SDK_INT>=33)registerReceiver(restChanges,restFilter,Context.RECEIVER_NOT_EXPORTED);else registerReceiver(restChanges,restFilter,"app.meowmove.INTERNAL",null);restRegistered=true;
         web.setWebChromeClient(new WebChromeClient());web.loadUrl(ORIGIN+"assets/index.html");
         if(Build.VERSION.SDK_INT>=33)getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,()->handleBack());
     }
     @Override protected void onResume(){super.onResume();foreground=true;try{RestReceiver.sync(this,true);}catch(Exception ignored){}Backup.kick(this);if(web!=null)web.postDelayed(()->web.evaluateJavascript("window.nativeResume&&window.nativeResume()",null),250);}
+    @Override protected void onDestroy(){if(restRegistered)unregisterReceiver(restChanges);super.onDestroy();}
     @Override protected void onPause(){foreground=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);super.onPause();}
     @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(intent.getBooleanExtra("openTimer",false))web.evaluateJavascript("window.openRestTimer&&window.openRestTimer()",null);}
     private void handleBack(){web.evaluateJavascript("window.appBack&&window.appBack()",result->{if("false".equals(result))finish();});}
@@ -59,7 +65,11 @@ public class MainActivity extends Activity {
     private void picker(String action,String mime,int request,String name){Intent i=new Intent(action);i.addCategory(Intent.CATEGORY_OPENABLE);i.setType(mime);i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);if(name!=null)i.putExtra(Intent.EXTRA_TITLE,name);if(request==IMPORT)i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);try{startActivityForResult(i,request);}catch(Exception e){notice("手机没有可用的文件选择器");}}
     private final class Bridge {
         @JavascriptInterface public String load(){try{return Store.get(MainActivity.this).load();}catch(Exception e){return error(e);}}
-        @JavascriptInterface public String save(String value,boolean backupNow){try{Store store=Store.get(MainActivity.this);store.save(value);try{RestReceiver.sync(MainActivity.this,false);}catch(Exception ignored){}if(backupNow)try{store.snapshot();}catch(Exception ignored){}try{Backup.changed(MainActivity.this);if(backupNow)Backup.kick(MainActivity.this);}catch(Exception ignored){}return "{\"ok\":true}";}catch(Exception e){return error(e);}}
+        @JavascriptInterface public String save(String value,boolean backupNow){try{
+            JSONObject data=Store.get(MainActivity.this).saveFromWeb(value,backupNow);
+            try{RestReceiver.sync(MainActivity.this,false);}catch(Exception ignored){}try{Backup.changed(MainActivity.this);if(backupNow)Backup.kick(MainActivity.this);}catch(Exception ignored){}
+            return new JSONObject().put("ok",true).put("timer",data.optJSONObject("restTimer")).toString();
+        }catch(Exception e){return error(e);}}
         @JavascriptInterface public String backupStatus(){return Backup.status(MainActivity.this);}
         @JavascriptInterface public void chooseBackup(){runOnUiThread(()->picker(Intent.ACTION_CREATE_DOCUMENT,"application/json",BACKUP,"meow-move-backup.json"));}
         @JavascriptInterface public void backupNow(){Backup.changed(MainActivity.this);Backup.kick(MainActivity.this);notice("正在更新备份文件");}
@@ -75,6 +85,9 @@ public class MainActivity extends Activity {
         @JavascriptInterface public boolean restNotified(String cycle){try{JSONObject timer=new JSONObject(Store.get(MainActivity.this).load()).optJSONObject("restTimer");return timer!=null&&cycle.equals(timer.optString("cycleId"))&&timer.optBoolean("notified",false);}catch(Exception ignored){return false;}}
         @JavascriptInterface public void keepScreenOn(boolean enabled){runOnUiThread(()->{if(enabled&&foreground)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);});}
         @JavascriptInterface public void vibrate(){Vibrator v=(Vibrator)getSystemService(VIBRATOR_SERVICE);if(v!=null)v.vibrate(VibrationEffect.createOneShot(90,VibrationEffect.DEFAULT_AMPLITUDE));}
+        @JavascriptInterface public void playRestSound(){runOnUiThread(()->{android.media.ToneGenerator tone=new android.media.ToneGenerator(android.media.AudioManager.STREAM_NOTIFICATION,75);tone.startTone(android.media.ToneGenerator.TONE_PROP_BEEP,350);web.postDelayed(tone::release,500);});}
+        @JavascriptInterface public String backupVersions(){return Store.get(MainActivity.this).backupVersions().toString();}
+        @JavascriptInterface public String recoveryVersion(String name){try{return Store.get(MainActivity.this).recoveryVersion(name);}catch(Exception e){return "null";}}
         @JavascriptInterface public boolean notificationsEnabled(){return ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).areNotificationsEnabled();}
         @JavascriptInterface public boolean isForeground(){return isVisible(MainActivity.this);}
         @JavascriptInterface public void requestNotifications(){runOnUiThread(()->{if(Build.VERSION.SDK_INT>=33&&checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},31);});}

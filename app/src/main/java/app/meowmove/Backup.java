@@ -32,7 +32,7 @@ final class Backup {
             boolean pending=s.revision()!=revision;
             if(!value.equals(p.getString("uri","")))return false;
             p.edit().putLong("writtenAt",System.currentTimeMillis()).putBoolean("pending",pending).putString("error","").apply();
-            if(pending)schedule(c);return !pending;
+            try{s.snapshot();}catch(Exception ignored){}if(pending)schedule(c);return !pending;
         }catch(Exception e){p.edit().putString("error","备份文件暂时无法写入，请检查网络或重新选择文件").putBoolean("pending",true).apply();return false;}
     }
     static String status(Context c){try{SharedPreferences p=prefs(c);return new JSONObject().put("connected",!p.getString("uri","").isEmpty()).put("drive",p.getBoolean("drive",false)).put("name",p.getString("name","meow-move-backup.json")).put("writtenAt",p.getLong("writtenAt",0)).put("pending",p.getBoolean("pending",false)).put("error",p.getString("error","")).toString();}catch(Exception e){return "{}";}}

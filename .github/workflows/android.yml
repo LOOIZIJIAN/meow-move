@@ -38,7 +38,7 @@ jobs:
           packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
           log-accepted-android-sdk-licenses: false
       - name: Build and lint
-        run: ./gradlew --no-daemon :app:assembleDebug :app:lintRelease
+        run: ./gradlew --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest :app:lintRelease
       - name: Upload debug APK
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.AtomicFile;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -34,8 +37,21 @@ final class Store extends SQLiteOpenHelper {
         try{ContentValues v=new ContentValues();v.put("id",1);v.put("payload",payload);v.put("revision",rev);db.insertWithOnConflict("document",null,v,SQLiteDatabase.CONFLICT_REPLACE);db.setTransactionSuccessful();}finally{db.endTransaction();}
         return rev;
     }
+    synchronized JSONObject saveFromWeb(String value,boolean critical)throws Exception{
+        JSONObject data=new JSONObject(value),old=new JSONObject(load()),nativeTimer=old.optJSONObject("restTimer"),incoming=data.optJSONObject("restTimer");
+        if(nativeTimer!=null&&incoming!=null&&incoming.optLong("controlRevision",0)<nativeTimer.optLong("controlRevision",0)){data.put("restTimer",nativeTimer);JSONObject active=data.optJSONObject("active");if(active!=null)active.put("restUntil",active.optString("id").equals(nativeTimer.optString("sessionId"))?nativeTimer.optLong("endAt"):0);}
+        if(critical)try{snapshot();}catch(Exception ignored){}save(data.toString());if(critical)try{snapshot();}catch(Exception ignored){}return data;
+    }
+    private File versionsDir(){File dir=new File(context.getFilesDir(),"versions");dir.mkdirs();return dir;}
+    private File[] versions(){File[] list=versionsDir().listFiles((d,name)->name.matches("backup-[0-9]+-[0-9]+\\.json"));if(list==null)return new File[0];Arrays.sort(list,Comparator.<File>comparingLong(f->Long.parseLong(f.getName().split("-")[1])).reversed().thenComparing(Comparator.<File>comparingLong(f->Long.parseLong(f.getName().split("-")[2].replace(".json",""))).reversed()));return list;}
+    synchronized JSONArray backupVersions(){JSONArray out=new JSONArray();for(File f:versions())try{out.put(new JSONObject().put("name",f.getName()).put("createdAt",f.lastModified()).put("bytes",f.length()));}catch(Exception ignored){}return out;}
+    synchronized String recoveryVersion(String name)throws Exception{if(name==null||!name.matches("backup-[0-9]+-[0-9]+\\.json"))throw new IOException("版本名称无效");return read(new FileInputStream(new File(versionsDir(),name)),20*1024*1024);}
+    private void atomic(File file,String payload)throws Exception{AtomicFile f=new AtomicFile(file);FileOutputStream out=null;try{out=f.startWrite();out.write(payload.getBytes(StandardCharsets.UTF_8));f.finishWrite(out);}catch(Exception e){if(out!=null)f.failWrite(out);throw e;}}
     synchronized void snapshot() throws Exception {
-        AtomicFile f=new AtomicFile(new File(context.getFilesDir(),"recovery.json"));FileOutputStream out=null;
-        try{out=f.startWrite();out.write(load().getBytes(StandardCharsets.UTF_8));f.finishWrite(out);}catch(Exception e){if(out!=null)f.failWrite(out);throw e;}
+        String payload=load();File[] old=versions();
+        atomic(new File(context.getFilesDir(),"recovery.json"),payload);
+        if(old.length>0&&payload.equals(read(new FileInputStream(old[0]),20*1024*1024)))return;
+        atomic(new File(versionsDir(),"backup-"+System.currentTimeMillis()+"-"+revision()+".json"),payload);
+        File[] list=versions();for(int i=10;i<list.length;i++)if(!list[i].delete())throw new IOException("无法清理旧版本");
     }
 }
