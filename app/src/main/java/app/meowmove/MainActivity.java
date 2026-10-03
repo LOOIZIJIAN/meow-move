@@ -84,6 +84,19 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public boolean restNotified(String cycle){try{JSONObject timer=new JSONObject(Store.get(MainActivity.this).load()).optJSONObject("restTimer");return timer!=null&&cycle.equals(timer.optString("cycleId"))&&timer.optBoolean("notified",false);}catch(Exception ignored){return false;}}
         @JavascriptInterface public void keepScreenOn(boolean enabled){runOnUiThread(()->{if(enabled&&foreground)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);});}
+        // Feel layer haptics. performHapticFeedback follows the system touch-feedback setting and uses the
+        // motor's tuned effects; "success" and "purr" are short sequences of those same effects.
+        @JavascriptInterface public void haptic(String kind){runOnUiThread(()->{if(web==null)return;
+            int tick=Build.VERSION.SDK_INT>=34?HapticFeedbackConstants.SEGMENT_TICK:HapticFeedbackConstants.CLOCK_TICK,confirm=Build.VERSION.SDK_INT>=30?HapticFeedbackConstants.CONFIRM:HapticFeedbackConstants.VIRTUAL_KEY;
+            switch(kind==null?"":kind){
+                case "tick":web.performHapticFeedback(tick);break;
+                case "soft":web.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);break;
+                case "confirm":web.performHapticFeedback(confirm);break;
+                case "heavy":web.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);break;
+                case "success":web.performHapticFeedback(confirm);web.postDelayed(()->web.performHapticFeedback(tick),110);web.postDelayed(()->web.performHapticFeedback(confirm),220);break;
+                case "purr":for(int i=0;i<4;i++)web.postDelayed(()->web.performHapticFeedback(tick),i*45L);break;
+                default:
+            }});}
         @JavascriptInterface public void vibrate(){Vibrator v=(Vibrator)getSystemService(VIBRATOR_SERVICE);if(v!=null)v.vibrate(VibrationEffect.createOneShot(90,VibrationEffect.DEFAULT_AMPLITUDE));}
         @JavascriptInterface public void playRestSound(){runOnUiThread(()->{android.media.ToneGenerator tone=new android.media.ToneGenerator(android.media.AudioManager.STREAM_NOTIFICATION,75);tone.startTone(android.media.ToneGenerator.TONE_PROP_BEEP,350);web.postDelayed(tone::release,500);});}
         @JavascriptInterface public String backupVersions(){return Store.get(MainActivity.this).backupVersions().toString();}
