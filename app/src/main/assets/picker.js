@@ -11,6 +11,10 @@ const definitions={
  'new-muscle':['主要部位','heart'],
  'new-kind':['默认重量方式','weight'],
  'edit-kind':['重量方式','weight'],
+ 'goal-muscle':['训练部位','heart'],
+ 'goal-exercise':['目标动作','dumbbell'],
+ 'goal-kind':['比较重量方式','weight'],
+ 'goal-variant':['比较握法','sliders-horizontal'],
  'export-format':['文件格式','file-text']
 };
 function definition(select){return definitions[select.id]||Object.entries(definitions).find(([key])=>select.hasAttribute(key))?.[1]||[select.getAttribute('aria-label')||'选项','list-filter'];}

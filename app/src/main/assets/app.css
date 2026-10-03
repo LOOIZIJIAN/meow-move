@@ -161,3 +161,88 @@ html,body{margin:0;padding:0;background:#f9ecd2;color:#3f443d;min-height:100%;fo
 #meow-product .mf-app .mf-picker-option[hidden],#meow-product .mf-app .mf-picker-clear[hidden],#meow-product .mf-app .mf-picker-empty[hidden]{display:none}
 @keyframes mf-picker-enter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:360px){#meow-product .mf-app .mf-picker-sheet{padding:10px 12px 16px;border-radius:26px}#meow-product .mf-app .mf-picker-head{gap:9px}#meow-product .mf-app .mf-picker-head h2{font-size:16px}#meow-product .mf-app .mf-picker-trigger{font-size:13px}#meow-product .mf-app .mf-rest-picker label>.mf-small{display:none}}
+/* Strength goals share the journal's cream, raised surfaces and sage accents. */
+#meow-product .mf-goal-tabs{display:flex;gap:9px;margin:5px 0 22px;padding:6px;background:#f0dfbe;border-radius:20px;box-shadow:inset 0 2px 4px #9e7d3e12}
+#meow-product .mf-goal-tabs button{display:flex;justify-content:center;align-items:center;gap:7px;flex:1;min-height:46px;border-radius:15px;font:800 12px Nunito,sans-serif;color:#8c7956}
+#meow-product .mf-goal-tabs button[aria-pressed=true]{background:linear-gradient(#fffbea,#fff0d0);border:1px solid #fff9e9;color:#5b634a;box-shadow:0 3px 0 #d7bd91,0 6px 9px #99703912}
+#meow-product .mf-strength-hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 42%;padding:23px 20px 21px;margin:22px 0;border:2px solid #fffae8;border-radius:32px;background:radial-gradient(ellipse at 70% 10%,#fff8de,#f8dda5);box-shadow:inset 0 2px 0 #fffff1,0 6px 0 #debd84,0 13px 23px #98683614}
+#meow-product .mf-goal-kicker{display:inline-flex;align-items:center;gap:5px;color:#967540;font-size:10px;font-weight:800}
+#meow-product .mf-strength-hero h2{font:900 23px/1.45 Nunito,sans-serif;letter-spacing:-.4px;color:#59573c;margin:15px 0 10px}
+#meow-product .mf-strength-hero p{font-size:11px;line-height:1.9;color:#917b51;margin:0 0 17px}
+#meow-product .mf-strength-hero img{width:100%;align-self:center;filter:drop-shadow(0 8px 7px #8f65391c);transform:rotate(3deg)}
+#meow-product .mf-strength-hero .mf-primary{grid-column:1/-1;justify-content:center;min-height:51px;font-size:14px}
+#meow-product .mf-goal-overview{display:flex;justify-content:space-between;gap:10px;padding:17px 4px;color:#9b8460;font-size:11px}
+#meow-product .mf-goal-overview>span{display:flex;align-items:center;gap:6px}
+#meow-product .mf-goal-overview strong{font-size:21px;color:#678258}
+#meow-product .mf-goal-list{display:grid;gap:19px;margin:12px 0 23px}
+#meow-product .mf-strength-card{display:block;width:100%;padding:20px 17px;text-align:left;border:2px solid #fffbea;border-radius:27px;background:linear-gradient(140deg,#fffae9,#fcf0d4);box-shadow:inset 0 2px 0 #fffff2,0 5px 0 #ddc7a0,0 11px 21px #8d704019;color:#4c5141;margin-bottom:8px}
+#meow-product .mf-strength-card.is-complete{background:linear-gradient(145deg,#f2f8e6,#e0edcb);box-shadow:inset 0 2px 0 #faffec,0 5px 0 #bbcba7,0 11px 21px #6c814019}
+#meow-product .mf-strength-top{display:flex;align-items:center;gap:12px}
+#meow-product .mf-strength-icon{display:grid;place-items:center;flex-shrink:0;width:43px;height:47px;border:1px solid #fff1c4;border-radius:15px;background:linear-gradient(#ffdfa2,#f2c57c);box-shadow:inset 0 2px 0 #fff0bb,0 4px 0 #d9b477;color:#99713e;transform:rotate(-4deg)}
+#meow-product .mf-strength-name{flex:1;min-width:0}
+#meow-product .mf-strength-name strong{display:block;font-size:15px;line-height:1.5;font-weight:900;overflow-wrap:anywhere}
+#meow-product .mf-strength-name small{display:block;color:#978465;font-size:10px;line-height:1.7;margin-top:3px;overflow-wrap:anywhere}
+#meow-product .mf-strength-status{padding:6px 9px;flex-shrink:0;background:#e7efd6;color:#69814d;border:1px solid #f7fce8;border-radius:11px;font-size:10px;font-weight:800}
+#meow-product .mf-strength-numbers{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:20px 0 11px}
+#meow-product .mf-strength-numbers strong{font:900 30px/1.3 Nunito,sans-serif;letter-spacing:-.6px;color:#657c4f}
+#meow-product .mf-strength-numbers small{font-size:13px;letter-spacing:0;color:#a08961}
+#meow-product .mf-strength-numbers>span{font-size:10px;color:#938465}
+#meow-product .mf-strength-card .mf-progress{display:block;height:10px;background:#e9ddbd;box-shadow:inset 0 2px 3px #ae8b3c12}
+#meow-product .mf-strength-card .mf-progress>span{display:block;background:linear-gradient(90deg,#a2bb84,#70985f);height:100%;border-radius:inherit;box-shadow:inset 0 1px 0 #d9edb5}
+#meow-product .mf-strength-foot{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:13px;font-size:10px;color:#9b8968}
+#meow-product .mf-strength-foot>span:last-child{display:flex;align-items:center;gap:3px;font-weight:800;color:#748153}
+#meow-product .mf-goal-empty{text-align:center;padding:29px 20px 27px;border:1px dashed #d8c295;background:#fcf2db;border-radius:27px}
+#meow-product .mf-goal-empty .mf-strength-icon{margin:0 auto 17px}
+#meow-product .mf-goal-empty h3{font-size:15px;color:#706340}
+#meow-product .mf-goal-empty p{font-size:12px;line-height:1.9;color:#9a8562;margin-bottom:20px}
+#meow-product .mf-goal-empty .mf-secondary{margin:auto}
+#meow-product .mf-goal-shortcut{display:flex;align-items:center;gap:12px;width:100%;min-height:81px;padding:14px 16px;margin:19px 0 24px;border:1px solid #fff9e6;border-radius:24px;background:linear-gradient(#fff8e3,#f9eaca);box-shadow:var(--mf-raised);text-align:left}
+#meow-product .mf-goal-shortcut>span:nth-child(2){flex:1;min-width:0}
+#meow-product .mf-goal-shortcut strong{display:block;font-size:13px;color:#686341}
+#meow-product .mf-goal-shortcut small{display:block;font-size:10px;color:#9e8963;line-height:1.7;margin-top:5px}
+#meow-product .mf-goal-detail-head{position:relative;margin:28px 4px 21px}
+#meow-product .mf-goal-detail-head .mf-strength-icon{width:49px;height:52px;margin-bottom:20px}
+#meow-product .mf-goal-detail-head .mf-strength-status{position:absolute;right:0;top:16px}
+#meow-product .mf-goal-detail-head h1{font:900 26px/1.4 Nunito,sans-serif;margin:0 0 6px;overflow-wrap:anywhere}
+#meow-product .mf-goal-detail-head p{font-size:11px;color:#9b8460;line-height:1.8}
+#meow-product .mf-goal-score{padding:23px 20px;margin:15px 0 26px;border:2px solid #fffae8;border-radius:29px;background:radial-gradient(ellipse at 10% 0,#fffcee,#f8e9c4);box-shadow:inset 0 2px 0 #fffff6,0 5px 0 #dfc99b,0 10px 20px #8d704016}
+#meow-product .mf-goal-score-value{display:flex;align-items:baseline;gap:7px;font:900 47px/1.3 Nunito,sans-serif;color:#607949;letter-spacing:-1px;margin:11px 0 2px;flex-wrap:wrap}
+#meow-product .mf-goal-score-value small{font-size:16px;letter-spacing:0}
+#meow-product .mf-goal-score-value>span{font-size:16px;letter-spacing:0;color:#ac9166;font-weight:700;margin-left:auto}
+#meow-product .mf-goal-score .mf-progress{margin:21px 0 10px;height:11px;background:#e1d5b0}
+#meow-product .mf-goal-score .mf-progress span{height:100%;display:block;border-radius:inherit;background:linear-gradient(90deg,#a9be8e,#7d9c65)}
+#meow-product .mf-goal-score .mf-milestone-title{font-size:10px;color:#94815e}
+#meow-product .mf-goal-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:20px 0 4px}
+#meow-product .mf-goal-metrics>div{display:flex;flex-direction:column;text-align:center;min-width:0;padding:9px 3px;background:#fbf3df;border:1px solid #eee0bf;border-radius:16px;box-shadow:inset 0 1px 0 #fffcee}
+#meow-product .mf-goal-metrics strong{font:900 23px Nunito,sans-serif;color:#7c835a;overflow-wrap:anywhere}
+#meow-product .mf-goal-metrics small{font-size:10px;color:#a28d65}
+#meow-product .mf-goal-metrics span{font-size:9px;color:#a28e6a;margin-top:6px;line-height:1.7}
+#meow-product .mf-goal-celebrate{display:flex;align-items:center;gap:7px;color:#638253;font-size:12px;line-height:1.7;background:#eaf0d7;padding:11px;border-radius:15px}
+#meow-product .mf-goal-timeline{margin:19px 0 8px}
+#meow-product .mf-goal-step{position:relative;display:flex;align-items:center;gap:12px;min-height:69px;padding:11px 0}
+#meow-product .mf-goal-step:not(:last-child):after{content:'';position:absolute;top:55px;bottom:-12px;left:18px;width:2px;background:#e5d7b6}
+#meow-product .mf-goal-step-mark{display:grid;place-items:center;width:37px;height:39px;flex-shrink:0;border-radius:14px;border:1px solid #e4d4ae;background:#f3e7cb;color:#b9a17a;box-shadow:inset 0 1px 0 #fff6df}
+#meow-product .mf-goal-step.is-reached .mf-goal-step-mark{background:linear-gradient(#b9cfa1,#8daa76);border-color:#c8dab3;color:#fffbee;box-shadow:inset 0 2px 0 #dcebc8,0 3px 0 #7e9a69}
+#meow-product .mf-goal-step>div{flex:1;min-width:0}
+#meow-product .mf-goal-step strong{display:block;font:900 17px Nunito,sans-serif;color:#8c7b54}
+#meow-product .mf-goal-step strong small{font-size:11px;color:#a28c64;font-weight:700}
+#meow-product .mf-goal-step.is-reached strong{color:#698150}
+#meow-product .mf-goal-step>div>span{display:block;font-size:10px;line-height:1.7;color:#ac9773;margin-top:4px}
+#meow-product .mf-goal-step-label{font-size:9px;color:#a8926b;white-space:nowrap}
+#meow-product .mf-goal-step.is-reached .mf-goal-step-label{color:#79905e;font-weight:800}
+#meow-product .mf-goal-pace{padding:14px;border-radius:17px;background:#f2e7ca;box-shadow:inset 0 2px 3px #a48a5110;margin-top:19px}
+#meow-product .mf-goal-pace strong{font:900 18px Nunito,sans-serif;color:#8c774e}
+#meow-product .mf-goal-pace span{display:block;margin-top:6px;font-size:10px;color:#a18d66;line-height:1.7}
+#meow-product .mf-goal-chart{width:100%;height:auto;margin-top:10px;display:block}
+#meow-product .mf-goal-legend{display:flex;justify-content:center;gap:16px;font-size:10px;color:#8e9e74;margin:3px 0 14px}
+#meow-product .mf-goal-legend span:last-child{color:#b09a71}
+#meow-product .mf-goal-links{padding:12px 13px;border:1px dashed #dec89f;border-radius:15px;margin:15px 0;font-size:11px;color:#96815d}
+#meow-product .mf-goal-links summary{min-height:27px;font-weight:800;cursor:pointer}
+#meow-product .mf-goal-links p{line-height:1.8;overflow-wrap:anywhere}
+#meow-product .mf-goal-related{display:grid;gap:8px;margin:16px 0 0}
+#meow-product .mf-goal-related button{display:flex;gap:11px;align-items:center;width:100%;text-align:left;min-height:66px;padding:11px;border-radius:16px;border:1px solid #eddfc0;background:linear-gradient(#fffaeb,#fbefd7);box-shadow:inset 0 1px 0 #fffdf1}
+#meow-product .mf-goal-related button>span:nth-child(2){flex:1;min-width:0}
+#meow-product .mf-goal-related strong{font-size:12px;color:#6a654c;display:block;overflow-wrap:anywhere;line-height:1.6}
+#meow-product .mf-goal-related small{font-size:9px;color:#a18d69;display:block;line-height:1.7;margin-top:4px}
+#meow-product .mf-goal-session-date{color:#a2804c;font-size:14px;font-weight:900;min-width:40px}
+@media(max-width:360px){#meow-product .mf-strength-hero{padding:20px 15px}#meow-product .mf-strength-hero h2{font-size:20px}#meow-product .mf-strength-numbers strong{font-size:27px}#meow-product .mf-strength-top{gap:9px}#meow-product .mf-strength-name strong{font-size:13px}#meow-product .mf-goal-score{padding:20px 15px}#meow-product .mf-strength-status{padding:5px 7px}#meow-product .mf-goal-tabs button{font-size:11px}}
