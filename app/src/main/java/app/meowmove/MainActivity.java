@@ -21,6 +21,7 @@ import org.json.*;
 public class MainActivity extends Activity {
     private WebView web;
     static volatile boolean foreground;
+    static boolean isVisible(Context context){return foreground&&((PowerManager)context.getSystemService(POWER_SERVICE)).isInteractive()&&!((KeyguardManager)context.getSystemService(KEYGUARD_SERVICE)).isKeyguardLocked();}
     private static final String ORIGIN="https://appassets.androidplatform.net/";
     private static final int BACKUP=21,EXPORT=22,IMPORT=23;
     @Override public void onCreate(Bundle state){super.onCreate(state);
@@ -75,7 +76,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void keepScreenOn(boolean enabled){runOnUiThread(()->{if(enabled&&foreground)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);});}
         @JavascriptInterface public void vibrate(){Vibrator v=(Vibrator)getSystemService(VIBRATOR_SERVICE);if(v!=null)v.vibrate(VibrationEffect.createOneShot(90,VibrationEffect.DEFAULT_AMPLITUDE));}
         @JavascriptInterface public boolean notificationsEnabled(){return ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).areNotificationsEnabled();}
-        @JavascriptInterface public boolean isForeground(){return foreground;}
+        @JavascriptInterface public boolean isForeground(){return isVisible(MainActivity.this);}
         @JavascriptInterface public void requestNotifications(){runOnUiThread(()->{if(Build.VERSION.SDK_INT>=33&&checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},31);});}
         @JavascriptInterface public String recovery(){try{File f=new File(getFilesDir(),"recovery.json");return f.exists()?Store.read(new FileInputStream(f),20*1024*1024):"null";}catch(Exception e){return "null";}}
     }

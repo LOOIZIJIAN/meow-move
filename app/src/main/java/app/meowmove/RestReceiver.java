@@ -24,7 +24,7 @@ public class RestReceiver extends BroadcastReceiver {
     }
     public void onReceive(Context c,Intent intent){try{
         // The visible app handles its own completion; background notifications are acknowledged once.
-        if(MainActivity.foreground)return;
+        if(MainActivity.isVisible(c))return;
         Store store=Store.get(c);boolean notify;
         synchronized(store){
             JSONObject data=new JSONObject(store.load()),timer=data.optJSONObject("restTimer");
