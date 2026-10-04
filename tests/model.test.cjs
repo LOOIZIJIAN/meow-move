@@ -199,3 +199,18 @@ test('restoring keeps the newer exercise name instead of failing on a rename', (
   assert.equal(restored.name, '平板杠铃卧推');
   assert.equal(restored.renamedAt, 10);
 });
+
+test('workout timing comes from recorded timestamps or the time in an imported note title', () => {
+  const note = title => M.timing({ imported: true, title, startedAt: null, endedAt: null });
+  assert.deepEqual(note('练背 29/09/2000 1955-2043'), { start: '19:55', end: '20:43', minutes: 48, fromNote: true });
+  assert.deepEqual(note('练背 21/9/2000 1930-'), { start: '19:30', end: null, minutes: null, fromNote: true });
+  assert.deepEqual(note('练胸 2/10/2000 19:37'), { start: '19:37', end: null, minutes: null, fromNote: true });
+  assert.deepEqual(note('练腿 30/8/2000 1837'), { start: '18:37', end: null, minutes: null, fromNote: true });
+  assert.deepEqual(note('练肩 8/8/00 2030-2130'), { start: '20:30', end: '21:30', minutes: 60, fromNote: true });
+  assert.deepEqual(note('练腿 9/1/2000 2330-0015'), { start: '23:30', end: '00:15', minutes: 45, fromNote: true });
+  assert.equal(note('练腿 9/1/2000'), null, 'a date alone is never read as a time');
+  assert.equal(note('练背 9/1/2000 100kg'), null);
+  const start = new Date(2000, 0, 2, 18, 2).getTime(), end = new Date(2000, 0, 2, 19, 14).getTime();
+  assert.deepEqual(M.timing({ title: '肩训练', startedAt: start, endedAt: end }), { start: '18:02', end: '19:14', minutes: 72, fromNote: false });
+  assert.equal(M.timing({ title: '肩训练', startedAt: null, endedAt: null }), null);
+});

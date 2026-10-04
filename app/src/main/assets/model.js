@@ -83,10 +83,22 @@ function validate(v){if(!v||v.app!=='meow-move'||v.schema!==1||!Array.isArray(v.
  if(!['three','five'].includes(v.preferences.split)||!Array.isArray(v.preferences.muscles)||!v.preferences.muscles.every(m=>MUSCLES.includes(m))||!Number.isInteger(v.preferences.weeklyGoal)||v.preferences.weeklyGoal<1||v.preferences.weeklyGoal>7)throw Error('偏好设置无效');return v;
 }
 function lastChanged(s){return Math.max(s.modifiedAt||0,s.endedAt||0,...s.exercises.flatMap(e=>e.sets.map(x=>Math.max(x.editedAt||0,x.recordedAt||0))));}
+// Start/end shown in history and detail. Recorded workouts use their own timestamps; imported notes only
+// have a time in the title ("1955-2043", "1930-", "19:37"), read after the date is removed so "2026" is
+// never taken for 20:26. Returns null when nothing is known.
+function clock(minutes){minutes=((minutes%1440)+1440)%1440;return String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');}
+function timing(s){
+ if(Number.isFinite(s.startedAt)&&Number.isFinite(s.endedAt)&&s.endedAt>=s.startedAt){const a=new Date(s.startedAt),b=new Date(s.endedAt);return {start:clock(a.getHours()*60+a.getMinutes()),end:clock(b.getHours()*60+b.getMinutes()),minutes:Math.round((s.endedAt-s.startedAt)/60000),fromNote:false};}
+ if(!s.imported)return null;
+ const text=String(s.title||'').replace(/\d{1,4}[\/.]\d{1,2}[\/.]\d{1,4}/g,' '),hm=v=>{const m=/^(\d{1,2}):?(\d{2})$/.exec(v||'');return m&&Number(m[1])<24&&Number(m[2])<60?Number(m[1])*60+Number(m[2]):null;};
+ const m=/(?:^|\s)(\d{1,2}:?\d{2})\s*[-–—~至到](?:\s*(\d{1,2}:?\d{2}))?/.exec(text)||/(?:^|\s)(\d{1,2}:\d{2}|\d{3,4})(?=\s|$)/.exec(text);
+ const start=hm(m?.[1]);if(start===null)return null;const end=hm(m[2]);
+ return {start:clock(start),end:end===null?null:clock(end),minutes:end===null?null:(end-start+1440)%1440,fromNote:true};
+}
 // Renaming keeps the exercise id, so history, goals and templates follow; the name must stay unique.
 function rename(state,eid,name,now=Date.now()){const e=state.catalog.find(x=>x.id===eid);if(!e)throw Error('没有这个动作');const next=String(name??'').trim();if(!next)throw Error('请填写动作名称');if(next.length>100)throw Error('动作名称最多100个字');if(state.catalog.some(x=>x.id!==eid&&norm(x.name)===norm(next)))throw Error('已有同名动作，请换一个名字');if(next===e.name)return false;e.name=next;e.renamedAt=now;return true;}
 // The same id with a different name is a rename on one device; the newer rename wins.
 function merge(state,incoming,{restorePreferences=true}={}){validate(incoming);const out=clone(state);let added=0,updated=0;for(const c of incoming.catalog){const old=out.catalog.find(e=>e.id===c.id);if(old&&norm(old.name)!==norm(c.name)&&(c.renamedAt||0)>(old.renamedAt||0)){old.name=c.name;old.renamedAt=c.renamedAt;}if(!old)out.catalog.push(clone(c));}for(const s of incoming.sources)if(!out.sources.some(x=>x.id===s.id||x.raw===s.raw))out.sources.push(clone(s));for(const s of incoming.sessions){const at=out.sessions.findIndex(x=>x.id===s.id);if(at<0&&out.active?.id!==s.id){out.sessions.push(clone(s));added++;}else if(at>=0&&lastChanged(s)>lastChanged(out.sessions[at])){out.sessions[at]=clone(s);updated++;}}if(!out.active&&incoming.active&&!out.sessions.some(s=>s.id===incoming.active.id))out.active=clone(incoming.active);out.goals=Goals.merge(out.goals,incoming.goals);Training.merge(out,incoming);if(restorePreferences)out.preferences=clone(incoming.preferences);validate(out);return {state:out,added,updated};}
-const api={MUSCLES,SPLITS,blank,clone,hash,id,day,norm,exerciseId,parseSet,parseNote,addNote,latest,draft,begin,select,complete,finish,rename,weekStart,weekly,stats,series,choices,kindName,setText,exportMarkdown,exportCsv,validate,merge};
+const api={MUSCLES,SPLITS,blank,clone,hash,id,day,norm,exerciseId,parseSet,parseNote,addNote,latest,draft,begin,select,complete,finish,rename,timing,weekStart,weekly,stats,series,choices,kindName,setText,exportMarkdown,exportCsv,validate,merge};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else global.MeowModel=api;
 })(typeof window!=='undefined'?window:globalThis);
