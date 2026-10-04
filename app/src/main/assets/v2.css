@@ -1,0 +1,287 @@
+/* 喵练 2.0 (palette A 莓果奶糖). Loaded last: flat pastel surfaces, sticker icons, one berry accent.
+   Only .mf-primary keeps a pressable lip. Source of truth for the look: work/v2-design. */
+#meow-product{background:#F9EBD6}
+#meow-product .mf-app{--ground:#F9EBD6;--sheet:#FFFBF5;--row:#F8ECDB;--well:#F3E4CE;--track:#EFDDC2;--ink:#3B302B;--muted:#77685A;--faint:#B39F86;
+  --rose:#C2415D;--rose-lip:#952C45;--rose-soft:#FBDCE3;--rose-ink:#A3304C;
+  --chest:#FFD9B0;--chest-ink:#8A4A16;--back:#BFEAF3;--back-ink:#1F6170;--leg:#C8EED3;--leg-ink:#23683E;
+  --shoulder:#E2D2FA;--shoulder-ink:#5B3E92;--arm:#FBCFDA;--arm-ink:#8E2F4D;--core:#FFE9A3;--core-ink:#77560A;
+  --mf-paper:var(--ground);--mf-surface:var(--sheet);--mf-ink:var(--ink);--mf-muted:var(--muted);--mf-line:var(--well);--mf-coral:var(--rose);--mf-green:var(--leg-ink);
+  background:var(--ground)!important;color:var(--ink)}
+/* pages without the sheet sit on the cream ground: their cards take the lighter sheet colour */
+#meow-product .mf-app .mf-content:not(:has(> .mf-sheet-wrap)){--row:#FFFBF5}
+#meow-product .mf-app .mf-pad-panel{--row:#F8ECDB}
+#meow-product .mf-app .mf-sticker{display:block;flex-shrink:0;-webkit-user-drag:none;user-select:none}
+#meow-product .mf-app .t-chest{--tint:var(--chest);--tint-ink:var(--chest-ink);--bar:#F6A04D}
+#meow-product .mf-app .t-back{--tint:var(--back);--tint-ink:var(--back-ink);--bar:#3FB8D2}
+#meow-product .mf-app .t-leg{--tint:var(--leg);--tint-ink:var(--leg-ink);--bar:#4DB97F}
+#meow-product .mf-app .t-shoulder{--tint:var(--shoulder);--tint-ink:var(--shoulder-ink);--bar:#9D7BDB}
+#meow-product .mf-app .t-arm{--tint:var(--arm);--tint-ink:var(--arm-ink);--bar:#EC7F9A}
+#meow-product .mf-app .t-core{--tint:var(--core);--tint-ink:var(--core-ink);--bar:#EDB82A}
+#meow-product .mf-app .mf-tile{display:grid;place-items:center;flex-shrink:0;width:46px;height:46px;border-radius:15px;background:var(--tint,#fff9)}
+
+/* flatten: every surface is a plain fill, no gradient, lip, inner highlight or stitched outline */
+#meow-product .mf-app .mf-report-panel,#meow-product .mf-app .mf-secondary,#meow-product .mf-app .mf-text-button,#meow-product .mf-app .mf-stat,
+#meow-product .mf-app .mf-history-card,#meow-product .mf-app .mf-template-card,#meow-product .mf-app .mf-template-empty,#meow-product .mf-app .mf-strength-card,
+#meow-product .mf-app .mf-goal-shortcut,#meow-product .mf-app .mf-rest-shortcut,#meow-product .mf-app .mf-milestone,#meow-product .mf-app .mf-exercise,
+#meow-product .mf-app .mf-menu-row,#meow-product .mf-app .mf-cloud-note,#meow-product .mf-app .mf-picker-trigger,#meow-product .mf-app .mf-achievement,
+#meow-product .mf-app .mf-rule-card,#meow-product .mf-app .mf-version-card,#meow-product .mf-app .mf-timer,#meow-product .mf-app .mf-hint,
+#meow-product .mf-app .mf-prescription,#meow-product .mf-app .mf-cat-room,#meow-product .mf-app .mf-pet-wallet,#meow-product .mf-app .mf-room-item,
+#meow-product .mf-app .mf-goal-overview,#meow-product .mf-app .mf-goal-metrics>*,#meow-product .mf-app .mf-goal-step,#meow-product .mf-app .mf-record-grid>*,
+#meow-product .mf-app .mf-detail-row,#meow-product .mf-app .mf-raw-note,#meow-product .mf-app .mf-empty,#meow-product .mf-app .mf-strength-hero,
+#meow-product .mf-app .mf-goal-empty,#meow-product .mf-app .mf-template-entry,#meow-product .mf-app .mf-goal-related button,#meow-product .mf-app .mf-goal-celebrate{
+  background:var(--row)!important;background-image:none!important;border:0!important;box-shadow:none!important;outline:0!important}
+#meow-product .mf-app .mf-report-panel{border-radius:22px!important;padding:16px!important;margin:12px 0!important}
+#meow-product .mf-app .mf-report-panel h3{font-size:15px;font-weight:900;color:var(--ink)}
+#meow-product .mf-app .mf-small,#meow-product .mf-app small{color:var(--muted)}
+#meow-product .mf-app .mf-overline{color:var(--rose-ink);font-weight:900}
+#meow-product .mf-app .mf-greeting{font-size:24px;font-weight:900;color:var(--ink);margin:4px 0 12px}
+
+/* controls sitting on a card use the darker well colour so they never vanish into it */
+#meow-product .mf-app .mf-secondary,#meow-product .mf-app .mf-cloud-note,#meow-product .mf-app .mf-menu-row,#meow-product .mf-app .mf-rest-adjust button,
+#meow-product .mf-app .mf-rest-presets button,#meow-product .mf-app .mf-rest-badge,#meow-product .mf-app .mf-rest-main-actions .mf-secondary,
+#meow-product .mf-app .mf-report-panel .mf-picker-trigger,#meow-product .mf-app .mf-report-panel input,#meow-product .mf-app .mf-report-panel textarea{background:var(--well)!important}
+
+/* buttons */
+#meow-product .mf-app .mf-primary{background:var(--rose)!important;background-image:none!important;color:#fff!important;border:0!important;border-radius:19px!important;min-height:54px!important;font-size:15px!important;font-weight:900!important;box-shadow:0 4px 0 var(--rose-lip)!important}
+#meow-product .mf-app .mf-primary:active{transform:translateY(4px);box-shadow:0 0 0 var(--rose-lip)!important}
+#meow-product .mf-app .mf-primary:disabled{opacity:.42}
+#meow-product .mf-app .mf-secondary{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:17px!important;color:var(--ink)!important;font-weight:900}
+#meow-product .mf-app .mf-text-button{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px;border-radius:14px!important;background:var(--well)!important;color:var(--muted)!important;font-size:12px;font-weight:900}
+#meow-product .mf-app .mf-inline-actions{display:flex;gap:10px;flex-wrap:wrap}
+#meow-product .mf-app .mf-inline-actions>*{flex:1 1 140px}
+#meow-product .mf-app .mf-picker-trigger{border-radius:16px!important;min-height:50px;color:var(--ink)}
+#meow-product .mf-app .mf-picker-chevron{background:var(--well)!important;box-shadow:none!important}
+#meow-product .mf-app .mf-field{color:var(--muted);font-weight:800}
+#meow-product .mf-app .mf-field input,#meow-product .mf-app .mf-field textarea,#meow-product .mf-app .mf-note-input,#meow-product .mf-app .mf-search input{background:var(--row)!important;border:0!important;box-shadow:none!important;border-radius:16px!important;color:var(--ink)}
+
+/* header + sheet + peeking cat */
+#meow-product .mf-app .mf-top{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 0}
+#meow-product .mf-app .mf-logo{display:flex;align-items:center;gap:10px}
+#meow-product .mf-app .mf-logo-mark{display:none}
+#meow-product .mf-app .mf-wordmark{font-size:22px;font-weight:900;letter-spacing:.5px;color:var(--ink)}
+#meow-product .mf-app .mf-brand-small{font-size:10px;font-weight:900;letter-spacing:2.4px;color:var(--muted)}
+#meow-product .mf-app .mf-cloud-button{display:flex;align-items:center;gap:8px;min-height:46px;padding:6px 14px 6px 7px;border-radius:18px!important;background:var(--chest)!important;background-image:none!important;border:0!important;box-shadow:none!important;color:var(--chest-ink)!important;font-size:13px;font-weight:900}
+#meow-product .mf-app .mf-cloud-button[aria-pressed=true]{background:var(--rose-soft)!important;color:var(--rose-ink)!important}
+#meow-product .mf-app .mf-sheet-wrap{position:relative;margin:54px -14px 0}
+#meow-product .mf-app .mf-sheet{position:relative;z-index:1;min-height:calc(100vh - 150px);margin-bottom:-114px;padding:18px 16px 140px;border-radius:30px 30px 0 0;background:var(--sheet)}
+#meow-product .mf-app .mf-sheet>:first-child{margin-top:0}
+#meow-product .mf-app .mf-peek{position:absolute;right:34px;top:-52px;z-index:0;display:block;width:104px;height:80px;overflow:hidden}
+#meow-product .mf-app .mf-peek i{position:absolute;inset:0;background:url('cat.webp') 50% -4px/116px auto no-repeat}
+
+/* section heads + split switch */
+#meow-product .mf-app .mf-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 0 12px}
+#meow-product .mf-app .mf-sheet>.mf-section-head:first-child{margin-top:2px}
+#meow-product .mf-app .mf-section-head h3{margin:0;font-size:17px;font-weight:900;color:var(--ink)}
+#meow-product .mf-app .mf-split-switch{display:flex;padding:4px;border-radius:15px;background:var(--well)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-split-switch button{min-height:38px;padding:0 13px;border-radius:12px;background:none!important;border:0!important;box-shadow:none!important;font-size:12px;font-weight:800;color:var(--muted)}
+#meow-product .mf-app .mf-split-switch button[aria-pressed=true]{background:var(--sheet)!important;color:var(--ink);box-shadow:0 1px 2px #5a432a1f!important}
+
+#meow-product .mf-app .mf-goal-tabs{display:flex;padding:4px;border-radius:17px;background:var(--well)!important;background-image:none!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-goal-tabs button{flex:1;min-height:44px;border-radius:13px!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important;color:var(--muted);font-weight:900}
+#meow-product .mf-app .mf-goal-tabs button[aria-pressed=true],#meow-product .mf-app .mf-goal-tabs button[aria-selected=true]{background:var(--sheet)!important;color:var(--ink);box-shadow:0 1px 2px #5a432a1f!important}
+
+#meow-product .mf-app .mf-template-intro{background:var(--leg)!important;background-image:none!important;border:0!important;box-shadow:none!important;border-radius:24px!important;color:var(--leg-ink)}
+#meow-product .mf-app .mf-template-intro .mf-secondary{background:#ffffffa6!important}
+#meow-product .mf-app .mf-template-intro .mf-template-icon,#meow-product .mf-app .mf-template-intro>span:first-child{background:#ffffffa6!important;box-shadow:none!important;border:0!important}
+
+#meow-product .mf-app .mf-goal-score{background:var(--chest)!important;background-image:none!important;border:0!important;box-shadow:none!important;border-radius:24px!important;color:var(--chest-ink)}
+#meow-product .mf-app .mf-goal-score .mf-progress{background:#ffffff8c!important}
+#meow-product .mf-app .mf-goal-metrics>*{background:#ffffffa6!important}
+#meow-product .mf-app .mf-goal-detail-head .mf-strength-icon,#meow-product .mf-app .mf-goal-step-mark{background:var(--chest)!important;border:0!important;box-shadow:none!important}
+
+/* plan tiles */
+#meow-product .mf-app .mf-plans{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#meow-product .mf-app .mf-plans:has(> :nth-child(3):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+#meow-product .mf-app .mf-plan{display:flex;flex-direction:column;align-items:center;gap:6px;min-height:44px;padding:0;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important;text-align:center}
+#meow-product .mf-app .mf-plan-art{position:relative;display:grid;place-items:center;width:62px;height:62px;border-radius:20px;background:var(--tint)!important;box-shadow:none!important;transform:none!important;margin:0!important}
+#meow-product .mf-app .mf-plan-check{display:none}
+#meow-product .mf-app .mf-plan-art{border:0!important}
+#meow-product .mf-app .mf-plan-art::after{content:none}
+#meow-product .mf-app .mf-plan-label{display:block;margin:0}
+#meow-product .mf-app .mf-plan-label strong{font-size:13px;font-weight:900;color:var(--ink)}
+#meow-product .mf-app .mf-plan-caption{min-height:13px;font-size:10px;font-weight:700;color:var(--muted);line-height:1.3}
+#meow-product .mf-app .mf-plan[aria-pressed=true] .mf-plan-art{box-shadow:0 0 0 3px var(--sheet),0 0 0 5.5px var(--rose)!important}
+#meow-product .mf-app .mf-plan[aria-pressed=true] .mf-plan-art::after{content:'';position:absolute;right:-6px;top:-6px;width:20px;height:20px;border-radius:50%;background:var(--rose) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.2l3 3 6-6.4' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100%;box-shadow:0 0 0 2.5px var(--sheet)}
+#meow-product .mf-app .mf-combo-line{display:flex;align-items:center;justify-content:space-between;margin:14px 0 12px}
+#meow-product .mf-app .mf-combo-label{padding:7px 12px;border-radius:12px;background:var(--well);font-size:12px;font-weight:800;color:var(--muted)}
+#meow-product .mf-app .mf-filter-list button{background:var(--row)!important;border:0!important;box-shadow:none!important;border-radius:13px;font-weight:800}
+#meow-product .mf-app .mf-filter-list button[aria-pressed=true]{background:var(--rose)!important;color:#fff}
+#meow-product .mf-app .mf-start{display:flex!important;align-items:center;justify-content:center;gap:10px;width:100%;margin:2px 0 10px}
+#meow-product .mf-app .mf-bubble{display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:#ffffff66}
+
+/* rows: 沿用上次, timer, templates, goals, common exercises */
+#meow-product .mf-app .mf-row,#meow-product .mf-app .mf-rest-shortcut,#meow-product .mf-app .mf-template-empty,#meow-product .mf-app .mf-goal-shortcut,#meow-product .mf-app .mf-template-main{
+  display:flex;align-items:center;gap:12px;width:100%;min-height:64px;margin:10px 0 0;padding:9px 12px 9px 9px!important;border-radius:20px!important;text-align:left;color:var(--ink)}
+#meow-product .mf-app .mf-row{background:var(--row);border:0}
+#meow-product .mf-app .mf-template-empty,#meow-product .mf-app .mf-goal-shortcut{display:flex!important;grid-template-columns:none!important}
+#meow-product .mf-app .mf-template-empty .mf-tile{flex:0 0 46px}
+#meow-product .mf-app .mf-template-empty>svg,#meow-product .mf-app .mf-goal-shortcut>svg{flex-shrink:0;color:var(--faint)}
+#meow-product .mf-app .mf-repeat-copy,#meow-product .mf-app .mf-rest-shortcut>span:nth-child(2),#meow-product .mf-app .mf-template-empty>span:last-of-type,#meow-product .mf-app .mf-goal-shortcut>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+#meow-product .mf-app .mf-repeat-copy strong,#meow-product .mf-app .mf-rest-shortcut strong,#meow-product .mf-app .mf-template-empty strong,#meow-product .mf-app .mf-goal-shortcut strong,#meow-product .mf-app .mf-template-main strong{font-size:14px;font-weight:900;color:var(--ink)}
+#meow-product .mf-app .mf-repeat-copy small,#meow-product .mf-app .mf-rest-shortcut small,#meow-product .mf-app .mf-template-empty small,#meow-product .mf-app .mf-goal-shortcut small{font-size:11.5px;font-weight:700;color:var(--muted)}
+#meow-product .mf-app .mf-rest-shortcut{background:var(--leg)!important}
+#meow-product .mf-app .mf-rest-shortcut .mf-tile{background:#ffffff99}
+#meow-product .mf-app .mf-rest-shortcut-time{font:900 26px Nunito,sans-serif;font-variant-numeric:tabular-nums;color:var(--leg-ink)}
+#meow-product .mf-app .mf-template-card{display:flex;align-items:center;gap:8px;margin:10px 0 0;padding:0!important;border-radius:20px!important;background:var(--row)!important}
+#meow-product .mf-app .mf-template-card .mf-template-main{flex:1;margin:0;background:none!important}
+#meow-product .mf-app .mf-template-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:var(--core)!important;box-shadow:none!important}
+#meow-product .mf-app .mf-template-edit{display:grid;place-items:center;width:44px;height:44px;margin-right:8px;border-radius:14px;background:var(--well)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-strength-card{display:block;width:100%;padding:14px!important;border-radius:22px!important;text-align:left;color:var(--ink)}
+#meow-product .mf-app .mf-strength-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:var(--tint,var(--chest))!important;box-shadow:none!important;transform:none!important}
+#meow-product .mf-app .mf-strength-status{background:var(--leg)!important;color:var(--leg-ink)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-progress{height:10px;border-radius:6px;background:var(--track)!important;box-shadow:none!important;overflow:hidden}
+#meow-product .mf-app .mf-progress span{background:var(--rose)!important;background-image:none!important;border-radius:6px;box-shadow:none!important}
+#meow-product .mf-app .mf-exercise{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;margin:10px 0 0;padding:9px 10px 9px 9px!important;border-radius:20px!important;text-align:left}
+#meow-product .mf-app .mf-exercise-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:var(--tint)!important;box-shadow:none!important;transform:none!important}
+#meow-product .mf-app .mf-exercise-name{font-size:14px;font-weight:900;color:var(--ink)}
+#meow-product .mf-app .mf-exercise-number{background:none!important;padding:0!important;color:var(--muted)!important;font-weight:800}
+#meow-product .mf-app .mf-exercise-history{color:var(--faint)}
+#meow-product .mf-app .mf-exercise-arrow{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:var(--rose-soft)!important;color:var(--rose-ink)!important;box-shadow:none!important;border:0!important}
+#meow-product .mf-app .mf-exercise-list+.mf-inline-actions{margin-top:12px}
+#meow-product .mf-app .mf-milestone{display:flex;align-items:center;gap:12px;margin:16px 0 0;padding:12px!important;border-radius:20px!important}
+#meow-product .mf-app .mf-badge-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:var(--core)!important;box-shadow:none!important;transform:none!important;color:var(--core-ink)}
+
+/* nav: stickers; only the selected tab shows its label */
+#meow-product .mf-app .mf-nav{background:var(--sheet)!important;background-image:none!important;border:0!important;box-shadow:0 6px 18px #6a4f2a24!important;border-radius:28px!important;padding:8px!important}
+#meow-product .mf-app .mf-nav button{flex:1;min-height:54px;border-radius:20px;color:var(--chest-ink)}
+#meow-product .mf-app .mf-nav-icon{width:auto!important;height:auto!important;background:none!important;box-shadow:none!important;transform:none!important}
+#meow-product .mf-app .mf-nav-label{display:none}
+#meow-product .mf-app .mf-nav button[aria-pressed=true]{flex:1.6;flex-direction:row;gap:8px;font-size:15px;font-weight:900;background:var(--chest)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-nav button[aria-pressed=true] .mf-nav-label{display:inline}
+#meow-product .mf-app .mf-nav-pill{background:var(--chest)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-nav.has-pill button[aria-pressed=true]{background:none!important}
+#meow-product .mf-app .mf-avatar{display:block;width:36px;height:36px;border-radius:50%;background:url('cat.webp') 50% 7%/190% no-repeat #FFE9C9;box-shadow:0 0 0 2.4px #4A3A30}
+
+/* trend */
+#meow-product .mf-app .mf-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 4px}
+#meow-product .mf-app .mf-stat{display:flex;align-items:center;gap:10px;padding:12px!important;border-radius:22px!important;background:var(--tint)!important;color:var(--tint-ink)}
+#meow-product .mf-app .mf-stat-icon{width:auto!important;height:auto!important;background:none!important;box-shadow:none!important;transform:none!important}
+#meow-product .mf-app .mf-stat-value{font:900 30px/1 Nunito,sans-serif;color:var(--tint-ink)}
+#meow-product .mf-app .mf-stat-value span{font-size:13px;margin-left:3px}
+#meow-product .mf-app .mf-stat-label{font-size:11.5px;font-weight:800;color:var(--tint-ink);opacity:.85}
+#meow-product .mf-app .mf-trend-pick{display:flex;align-items:flex-end;gap:10px}
+#meow-product .mf-app .mf-trend-pick .mf-field{flex:1;min-width:0;margin:0}
+#meow-product .mf-app .mf-trend-pick .mf-tile{margin-bottom:12px}
+#meow-product .mf-app .mf-type-row{display:flex;padding:4px;border-radius:15px;background:var(--well)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-type-row button{flex:1;min-height:40px;border-radius:12px;background:none!important;border:0!important;box-shadow:none!important;font-weight:800;color:var(--muted)}
+#meow-product .mf-app .mf-type-row button[aria-pressed=true]{background:var(--sheet)!important;color:var(--ink);box-shadow:0 1px 2px #5a432a1f!important}
+#meow-product .mf-app .mf-summary-number{font:900 40px/1.1 Nunito,sans-serif;color:var(--ink)}
+#meow-product .mf-app .mf-breakdown{display:flex;align-items:center;gap:9px;margin-top:10px;font-weight:900}
+#meow-product .mf-app .mf-breakdown .mf-tile{width:34px;height:34px;border-radius:11px}
+#meow-product .mf-app .mf-breakdown-label{min-width:34px}
+#meow-product .mf-app .mf-breakdown-track{flex:1;height:12px;border-radius:7px;background:var(--track)!important;box-shadow:none!important;overflow:hidden}
+#meow-product .mf-app .mf-breakdown-track>span{background:var(--rose)!important;background-image:none!important;border-radius:7px;box-shadow:none!important}
+#meow-product .mf-app .mf-breakdown-track>.is-bar{background:var(--bar)!important}
+
+/* history + detail */
+#meow-product .mf-app .mf-history-card{display:flex;align-items:center;gap:12px;width:100%;margin:10px 0 0;padding:10px 12px 10px 10px!important;border-radius:20px!important;text-align:left}
+#meow-product .mf-app .mf-history-date{display:flex;flex-direction:column;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:var(--tint,var(--chest))!important;color:var(--tint-ink,var(--chest-ink))!important;font:900 20px/1 Nunito,sans-serif;box-shadow:none!important;border:0!important}
+#meow-product .mf-app .mf-history-date small{margin-top:3px;font-size:9px;color:inherit;opacity:.8}
+#meow-product .mf-app .mf-history-title{font-weight:900;color:var(--ink)}
+#meow-product .mf-app .mf-detail h2{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:900}
+#meow-product .mf-app .mf-detail h2 .mf-tile{width:40px;height:40px;border-radius:13px}
+#meow-product .mf-app .mf-detail-row{background:none!important;border-top:1px solid var(--well)!important;border-radius:0!important;padding:10px 0!important}
+#meow-product .mf-app .mf-detail-time-main{background:var(--chest)!important;border:0!important;box-shadow:none!important;color:var(--chest-ink)}
+#meow-product .mf-app .mf-detail-chip{background:var(--well)}
+
+/* training: header, chips, exercise card, sets */
+#meow-product .mf-app .mf-back-head button:first-child{display:grid;place-items:center;width:46px;height:46px;border-radius:16px!important;background:var(--well)!important;background-image:none!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-finish{background:var(--rose-soft)!important;color:var(--rose-ink)!important}
+#meow-product .mf-app .mf-session-chips{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;margin:10px -14px 4px;padding:2px 14px 8px;scrollbar-width:none}
+#meow-product .mf-app .mf-session-chips::-webkit-scrollbar{display:none}
+#meow-product .mf-app .mf-session-chips button{display:flex;align-items:center;gap:6px;flex-shrink:0;min-height:46px;padding:5px 12px 5px 5px;border-radius:15px!important;background:var(--well)!important;background-image:none!important;border:0!important;box-shadow:none!important;color:var(--ink);font-size:12px;font-weight:800;white-space:nowrap}
+#meow-product .mf-app .mf-session-chips button .mf-tile{width:34px;height:34px;border-radius:11px}
+#meow-product .mf-app .mf-session-chips button[aria-pressed=true]{background:var(--rose)!important;color:#fff}
+#meow-product .mf-app .mf-session-chips button[aria-pressed=true] .mf-tile{background:#fff}
+#meow-product .mf-app .mf-exercise-hero{display:flex;align-items:center;gap:12px;margin:4px 0 12px;padding:12px!important;border-radius:22px!important;background:var(--tint)!important;background-image:none!important;border:0!important;box-shadow:none!important;color:var(--tint-ink)}
+#meow-product .mf-app .mf-exercise-hero .mf-tile{width:58px;height:58px;border-radius:18px;background:#ffffffa8}
+#meow-product .mf-app .mf-exercise-hero .mf-sticker{width:44px!important;height:44px!important;filter:none!important;object-fit:contain}
+#meow-product .mf-app .mf-history-picks{background:var(--row)!important;border-radius:18px!important}
+#meow-product .mf-app .mf-history-picks button{background:var(--well)!important}
+#meow-product .mf-app .mf-exercise-hero h2{margin:1px 0;font-size:18px;font-weight:900;color:var(--tint-ink)}
+#meow-product .mf-app .mf-exercise-hero .mf-overline,#meow-product .mf-app .mf-exercise-hero .mf-small{color:var(--tint-ink);opacity:.85;margin:0}
+#meow-product .mf-app .mf-fast-actions button,#meow-product .mf-app .mf-history-picks button,#meow-product .mf-app .mf-prescription button{background:var(--row)!important;background-image:none!important;border:0!important;box-shadow:none!important;border-radius:14px!important;color:var(--ink)}
+#meow-product .mf-app .mf-set-table th{background:var(--well)!important}
+#meow-product .mf-app .mf-set-table td{background:var(--sheet)!important;border-bottom:1px solid var(--well)!important}
+#meow-product .mf-app .mf-set-table .mf-current td{background:var(--rose-soft)!important;color:var(--rose-ink)!important;border-bottom:0!important}
+#meow-product .mf-app .mf-set-table button{background:var(--well)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-timer{border-radius:20px!important;background:var(--leg)!important}
+#meow-product .mf-app .mf-timer-mark{background:#ffffff99!important;box-shadow:none!important}
+#meow-product .mf-app .mf-timer button{background:#ffffffaa!important;border:0!important;box-shadow:none!important;border-radius:14px}
+
+/* training: sticky keypad panel (no system keyboard) */
+#meow-product .mf-app.is-session .mf-content{padding-bottom:0}
+#meow-product .mf-app .mf-pad-panel{position:sticky;bottom:0;z-index:15;margin:16px -14px 0;padding:12px 14px max(12px,env(safe-area-inset-bottom));border-radius:26px 26px 0 0;background:var(--sheet);box-shadow:0 -8px 22px #6a4f2a1c}
+#meow-product .mf-app .mf-pad-fields{display:grid;grid-template-columns:1.25fr 1fr;gap:9px}
+#meow-product .mf-app .mf-pad-field{position:relative;padding:8px 10px 6px 12px;border-radius:19px;background:var(--row)}
+#meow-product .mf-app .mf-pad-field.is-on{box-shadow:inset 0 0 0 2.5px var(--rose)}
+#meow-product .mf-app .mf-pad-head{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:28px;font-size:11px;font-weight:900;color:var(--muted)}
+#meow-product .mf-app .mf-pad-head .mf-picker-trigger{min-height:28px!important;width:auto;margin:0!important;padding:2px 4px 2px 9px!important;border-radius:10px!important;background:var(--sheet)!important;font-size:11px;font-weight:900;gap:4px}
+#meow-product .mf-app .mf-pad-head .mf-picker-chevron{width:20px;height:20px;border-radius:7px}
+#meow-product .mf-app .mf-pad-value{display:flex;align-items:baseline;gap:5px;width:100%;min-height:46px;padding:0;background:none!important;border:0!important;box-shadow:none!important;text-align:left;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+#meow-product .mf-app .mf-pad-value b{display:inline-flex;font:900 32px/1.1 Nunito,sans-serif;font-variant-numeric:tabular-nums;color:var(--ink)}
+#meow-product .mf-app .mf-pad-value>span{font-size:12px;font-weight:900;color:var(--muted)}
+#meow-product .mf-app .mf-pad-value:disabled b{font-size:24px;color:var(--muted)}
+#meow-product .mf-app .mf-pad-value.is-dragging b{color:var(--rose-ink)}
+#meow-product .mf-app .mf-caret{display:inline-block;width:2.5px;height:28px;margin-left:-2px;align-self:center;border-radius:2px;background:var(--rose);animation:mf-blink 1.05s steps(1) infinite}
+@keyframes mf-blink{50%{opacity:0}}
+#meow-product .mf-app .mf-pad-field.is-on::after{content:'⇠ 左右拨动 ⇢';position:absolute;right:10px;bottom:6px;font-size:9.5px;font-weight:800;color:var(--faint);pointer-events:none}
+#meow-product .mf-app .mf-pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 56px 122px;gap:7px;margin-top:10px}
+#meow-product .mf-app .mf-key{display:grid;place-items:center;height:52px;min-height:44px;padding:0;border-radius:16px;background:none!important;border:0!important;box-shadow:none!important;font:900 25px Nunito,sans-serif;color:var(--ink)}
+#meow-product .mf-app .mf-key:active{background:var(--well)!important}
+#meow-product .mf-app .mf-key.is-op{background:var(--well)!important;font-size:14px}
+#meow-product .mf-app .mf-key.is-soft{background:var(--row)!important;font-size:13px;color:var(--muted)}
+#meow-product .mf-app .mf-key:disabled{opacity:.3}
+#meow-product .mf-app .mf-pad-side{position:relative;display:flex;align-items:center;gap:6px;height:52px;padding:0 8px 0 6px;border-radius:16px;background:var(--tint)!important;border:0!important;box-shadow:none!important;color:var(--tint-ink);text-align:left;overflow:hidden}
+#meow-product .mf-app .mf-pad-side-label{position:absolute;left:40px;top:8px;font-size:10.5px;font-weight:900;opacity:.8;pointer-events:none}
+#meow-product .mf-app .mf-pad-side-value{position:absolute;left:40px;bottom:8px;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;font-weight:900}
+#meow-product .mf-app .mf-pad-side .mf-picker-trigger{position:absolute;inset:0;margin:0!important;min-height:0!important;width:100%;padding:20px 6px 0 40px!important;border-radius:16px!important;background:none!important;color:var(--tint-ink);font-size:12.5px;font-weight:900;justify-content:flex-start;gap:2px}
+#meow-product .mf-app .mf-pad-side .mf-picker-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#meow-product .mf-app .mf-pad-side .mf-picker-chevron{display:none}
+#meow-product .mf-app .mf-pad-panel>.mf-primary{margin-top:12px}
+#meow-product .mf-app .mf-pad-panel>.mf-hint{margin:0 0 8px}
+#meow-product .mf-app .mf-feeling-row button{background:var(--row)!important;border:0!important;box-shadow:none!important;border-radius:14px}
+#meow-product .mf-app .mf-feeling-row button[aria-pressed=true]{background:var(--rose)!important;color:#fff}
+
+/* exercise library: colour-coded sticker grid, multi-select */
+#meow-product .mf-app .mf-lib-tabs{display:flex;gap:4px;padding:4px;margin:0 0 10px;border-radius:17px;background:var(--well);overflow-x:auto;scrollbar-width:none}
+#meow-product .mf-app .mf-lib-tabs::-webkit-scrollbar{display:none}
+#meow-product .mf-app .mf-lib-tabs button{flex-shrink:0;min-height:40px;padding:0 13px;border-radius:13px;background:none!important;border:0!important;box-shadow:none!important;font-size:13px;font-weight:800;color:var(--muted)}
+#meow-product .mf-app .mf-lib-tabs button[aria-pressed=true]{background:var(--sheet)!important;color:var(--ink);box-shadow:0 1px 2px #5a432a1f!important}
+#meow-product .mf-app .mf-lib-tools{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
+#meow-product .mf-app .mf-chip{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:0 13px;border-radius:14px;background:var(--row)!important;border:0!important;box-shadow:none!important;font-size:12.5px;font-weight:900;color:var(--ink)}
+#meow-product .mf-app .mf-chip[aria-pressed=true]{background:var(--core)!important;color:var(--core-ink)}
+#meow-product .mf-app .mf-lib-eq{flex:1;min-width:0}
+#meow-product .mf-app .mf-lib-eq .mf-picker-trigger{margin:0!important;min-height:44px}
+#meow-product .mf-app .mf-library-count{font-size:11.5px;font-weight:800;color:var(--muted);margin:2px 2px 8px}
+#meow-product .mf-app .mf-lib-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-bottom:4px}
+#meow-product .mf-app .mf-ex-tile{position:relative;display:flex;align-items:center;gap:7px;min-height:60px;padding:6px 8px 6px 6px;border-radius:18px;background:var(--tint)!important;border:0!important;box-shadow:none!important;color:var(--tint-ink);text-align:left;font-size:12.5px;font-weight:900;line-height:1.25;-webkit-touch-callout:none;user-select:none}
+#meow-product .mf-app .mf-ex-tile .mf-tile{width:40px;height:40px;border-radius:13px;background:#ffffff99}
+#meow-product .mf-app .mf-ex-name{min-width:0;overflow-wrap:anywhere}
+#meow-product .mf-app .mf-ex-star{position:absolute;right:6px;top:3px;font-size:11px;color:var(--core-ink)}
+#meow-product .mf-app .mf-ex-tile[aria-pressed=true]{background:var(--rose)!important;color:#fff}
+#meow-product .mf-app .mf-ex-tile[aria-pressed=true] .mf-tile{background:#fff}
+#meow-product .mf-app .mf-ex-tile[aria-pressed=true] .mf-ex-star{color:#fff}
+#meow-product .mf-app .mf-lib-bar{position:sticky;bottom:-1px;margin:12px -4px -4px;padding:10px 4px 6px;background:linear-gradient(transparent,var(--sheet) 30%)}
+
+/* dialogs and picker sheet */
+#meow-product .mf-app .mf-dialog,#meow-product .mf-app .mf-picker-sheet{background:var(--sheet)!important;background-image:none!important;border:0!important;box-shadow:0 -6px 30px #4a36222e!important}
+#meow-product .mf-app .mf-picker-option{background:var(--row)!important;background-image:none!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-picker-option[aria-checked=true]{background:var(--rose-soft)!important;color:var(--rose-ink)!important}
+#meow-product .mf-app .mf-picker-option[aria-checked=true] .mf-picker-check{background:var(--rose)!important;border-color:var(--rose)!important;box-shadow:none!important}
+#meow-product .mf-app .mf-picker-mark{background:var(--chest)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-picker-search{background:var(--row)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-picker-close{background:var(--well)!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-dialog-head button{background:var(--well)!important;background-image:none!important;border:0!important;box-shadow:none!important;border-radius:14px!important}
+
+/* timer page */
+#meow-product .mf-app .mf-rest-face{background:var(--sheet)!important;background-image:none!important;border:0!important;box-shadow:none!important}
+#meow-product .mf-app .mf-rest-progress{stroke:#4DB97F}
+#meow-product .mf-app .mf-rest-adjust button,#meow-product .mf-app .mf-rest-presets button,#meow-product .mf-app .mf-rest-badge{background:var(--well)!important;background-image:none!important;border:0!important;box-shadow:none!important;color:var(--ink)}
+#meow-product .mf-app .mf-rest-presets button[aria-pressed=true]{background:var(--leg)!important;color:var(--leg-ink)}
+#meow-product .mf-app .mf-rest-mini{background:var(--leg)!important;background-image:none!important;border:0!important;box-shadow:0 4px 14px #6a4f2a24!important;color:var(--leg-ink)}
+
+/* page enter */
+#meow-product .mf-app .mf-content.mf-enter{animation:mf-enter 240ms cubic-bezier(.2,.8,.2,1) both}
+@keyframes mf-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#meow-product .mf-app .mf-content.mf-enter{animation:none}#meow-product .mf-app .mf-caret{animation:none}}

@@ -3,7 +3,7 @@
 // 质感 layer approved in work/ui-lab: haptics, paw stamps, dial ruler, responsive cats, record
 // celebration, rest finale and the jelly nav pill. Purely presentational: it never mutates data
 // except by dispatching the same input events a person would type.
-let A=null,prefs=()=>({});
+let A=null,prefs=()=>({}),drag=null;
 const reduce=()=>global.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 const PATTERN={tick:8,soft:14,confirm:[12,40,22],success:[16,45,24,45,44],heavy:42,purr:[5,40,5,40,5,40,5]};
 let lastTick=0;
@@ -25,6 +25,23 @@ function roll(el,text,dir){
       d.animate([{transform:`translateY(${dir*70}%)`,opacity:0},{transform:'none',opacity:1}],{duration:300,easing:'cubic-bezier(.2,1.35,.4,1)'});}
     el.append(cell);});
 }
+// Same odometer, from an explicit previous string (the keypad values are re-rendered as plain text).
+function rollFrom(el,prev,next,dir){el.textContent='';[...next].forEach((c,i)=>{const cell=document.createElement('span');cell.className='mf-cell';const d=document.createElement('span');d.className='mf-d';d.textContent=c;cell.append(d);
+  const p=prev[i-(next.length-prev.length)];if(!reduce()&&p!==c){if(p!==undefined){const o=document.createElement('span');o.className='mf-d old';o.textContent=p;cell.append(o);o.animate([{transform:'none',opacity:1},{transform:`translateY(${-dir*70}%)`,opacity:0}],{duration:200,easing:'ease-in',fill:'forwards'}).onfinish=()=>o.remove();}
+  d.animate([{transform:`translateY(${dir*70}%)`,opacity:0},{transform:'none',opacity:1}],{duration:300,easing:'cubic-bezier(.2,1.35,.4,1)'});}el.append(cell);});}
+// 2.0 keypad values: digits roll when they change, and a sideways swipe steps the value (16px per step).
+const lastPad={};let swallowPad=0;
+function padValues(root){
+  root.querySelectorAll('[data-roll-field]').forEach(el=>{const f=el.dataset.rollField,next=el.textContent,prev=lastPad[f];lastPad[f]=next;
+    if(prev!==undefined&&prev!==next&&isFinite(parseFloat(prev))&&isFinite(parseFloat(next)))rollFrom(el,prev,next,parseFloat(next)>parseFloat(prev)?1:-1);});
+  root.querySelectorAll('.mf-pad-value:not(:disabled)').forEach(btn=>{const f=btn.dataset.padField,out=btn.querySelector('[data-roll-field]');let x0=null,id=null,steps=0,dragging=false;
+    btn.addEventListener('pointerdown',e=>{x0=e.clientX;id=e.pointerId;steps=0;dragging=false;});
+    btn.addEventListener('pointermove',e=>{if(x0===null||e.pointerId!==id)return;const dx=e.clientX-x0;if(!dragging&&Math.abs(dx)>10){dragging=true;try{btn.setPointerCapture(id);}catch(err){}btn.classList.add('is-dragging');}
+      if(!dragging||!drag)return;const n=Math.trunc(dx/16);if(n===steps)return;const dir=n>steps?1:-1;steps=n;const v=drag(f,n,false);if(v==null)return;const prev=out.textContent,next=String(v);lastPad[f]=next;rollFrom(out,prev,next,dir);haptic('tick');});
+    const end=()=>{if(x0===null)return;x0=null;if(!dragging)return;btn.classList.remove('is-dragging');swallowPad=Date.now();drag&&drag(f,steps,true);};
+    btn.addEventListener('pointerup',end);btn.addEventListener('pointercancel',end);});
+}
+document.addEventListener('click',e=>{if(swallowPad&&Date.now()-swallowPad<350&&e.target.closest('.mf-pad-value')){swallowPad=0;e.stopPropagation();e.preventDefault();}},true);
 const shown=v=>v===''||v==null?'—':String(v);
 const fmt=v=>String(Number(v.toFixed(2)));
 
@@ -90,7 +107,7 @@ function celebrate({label,value,unit,note}){
   card.innerHTML=`<span class="mf-feel-ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 3.3a.5.5 0 0 1 .8 0l2.9 4.1a1 1 0 0 0 1.5.2l3-2.6a.5.5 0 0 1 .8.5L18.8 15H5.2L3.4 5.5a.5.5 0 0 1 .8-.5l3 2.6a1 1 0 0 0 1.5-.2z"/><path d="M5 19h14"/></svg>新纪录</span><div class="mf-feel-pr-label"></div><div class="mf-feel-pr-value"><b></b><span></span></div><div class="mf-feel-pr-note"></div>`;
   card.querySelector('.mf-feel-pr-label').textContent=label;card.querySelector('b').textContent=value;card.querySelector('.mf-feel-pr-value span').textContent=unit;card.querySelector('.mf-feel-pr-note').textContent=note;
   document.body.append(card);requestAnimationFrame(()=>{const r=card.getBoundingClientRect();burst(r.left+r.width*.72,r.top+30,52);});
-  hop(document.querySelector('.mf-exercise-hero img'));setTimeout(()=>{card.classList.add('is-leaving');setTimeout(()=>card.remove(),420);},2600);
+  hop(document.querySelector('.mf-exercise-hero .mf-tile,.mf-exercise-hero img'));setTimeout(()=>{card.classList.add('is-leaving');setTimeout(()=>card.remove(),420);},2600);
 }
 
 // 05 Rest finale on the timer dial and the session rest card.
@@ -106,7 +123,7 @@ function rest(t,ms){
 }
 function restDone(){const dial=document.querySelector('.mf-rest-dial');if(dial){const b=document.createElement('span');b.className='mf-rest-burst';dial.append(b);setTimeout(()=>b.remove(),760);}
   const btn=document.querySelector('.mf-rest-main-actions .mf-primary,.mf-timer button');if(btn){btn.classList.remove('is-wiggle');void btn.offsetWidth;btn.classList.add('is-wiggle');}
-  hop(document.querySelector('.mf-rest-adjust img,.mf-exercise-hero img'));}
+  hop(document.querySelector('.mf-rest-adjust img,.mf-exercise-hero .mf-tile'));}
 
 // 07 Jelly nav: the pill keeps its last position across re-renders and springs to the active tab.
 const pill={x:null,w:0,vx:0,vw:0,route:null};let nraf=0;
@@ -126,12 +143,12 @@ function navPill(root){
 function afterRender(root){
   root.classList.toggle('is-paper',prefs().paper!==false);
   root.querySelectorAll('.mf-number-box').forEach(numberBox);
-  root.querySelectorAll('.mf-hero-cat,.mf-exercise-hero img,.mf-rest-adjust img,.mf-costume img').forEach(liven);
+  root.querySelectorAll('.mf-hero-cat,.mf-exercise-hero img,.mf-rest-adjust img,.mf-costume img,.mf-peek').forEach(liven);padValues(root);
   const room=root.querySelector('.mf-cat-room');if(room)tilt(room);
   const fresh=root.querySelector('.mf-seal.is-new');
   if(fresh)setTimeout(()=>{haptic('confirm');const table=fresh.closest('table');if(table){table.classList.remove('is-bump');void table.offsetWidth;table.classList.add('is-bump');}
     const p=at(fresh),ring=document.createElement('span');ring.className='mf-feel-ink';ring.style.left=p.x+'px';ring.style.top=p.y+'px';ring.style.width=p.w+'px';ring.style.height=p.h+'px';layer().append(ring);setTimeout(()=>ring.remove(),560);
-    hop(root.querySelector('.mf-exercise-hero img'));},reduce()?0:230);
+    hop(root.querySelector('.mf-exercise-hero .mf-tile,.mf-exercise-hero img'));},reduce()?0:230);
   navPill(root);
 }
 
@@ -145,6 +162,6 @@ function holdSteps(){
   for(const ev of ['pointerup','pointercancel'])document.addEventListener(ev,stop);
 }
 
-function init(o){A=o.bridge||null;prefs=o.prefs||prefs;document.body.insertAdjacentHTML('afterbegin',SPRITE);holdSteps();}
+function init(o){A=o.bridge||null;prefs=o.prefs||prefs;drag=o.drag||null;document.body.insertAdjacentHTML('afterbegin',SPRITE);holdSteps();}
 global.MeowFeel={init,haptic,seal,afterRender,celebrate,rest,restDone};
 })(window);

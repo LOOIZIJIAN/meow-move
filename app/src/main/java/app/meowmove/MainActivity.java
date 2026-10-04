@@ -29,11 +29,11 @@ public class MainActivity extends Activity {
     // API 28-32 uses a signature permission; the not-exported receiver flag starts at API 33.
     @android.annotation.SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override public void onCreate(Bundle state){super.onCreate(state);
-        getWindow().setStatusBarColor(Color.rgb(249,236,210));getWindow().setNavigationBarColor(Color.rgb(249,236,210));
-        web=new WebView(this);web.setBackgroundColor(Color.rgb(249,236,210));
+        getWindow().setStatusBarColor(Color.rgb(249,235,214));getWindow().setNavigationBarColor(Color.rgb(249,235,214));
+        web=new WebView(this);web.setBackgroundColor(Color.rgb(249,235,214));
         // WebView does not reliably inset its HTML viewport when padded directly.
         // Inset the parent instead so fixed controls and the keyboard share the safe viewport.
-        FrameLayout viewport=new FrameLayout(this);viewport.setBackgroundColor(Color.rgb(249,236,210));
+        FrameLayout viewport=new FrameLayout(this);viewport.setBackgroundColor(Color.rgb(249,235,214));
         viewport.addView(web,new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));setContentView(viewport);
         if(Build.VERSION.SDK_INT>=30){getWindow().setDecorFitsSystemWindows(false);getWindow().getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS|WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS|WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);viewport.setOnApplyWindowInsetsListener((v,insets)->{android.graphics.Insets bars=insets.getInsets(WindowInsets.Type.systemBars()|WindowInsets.Type.displayCutout());android.graphics.Insets ime=insets.getInsets(WindowInsets.Type.ime());v.setPadding(bars.left,bars.top,bars.right,Math.max(bars.bottom,ime.bottom));return WindowInsets.CONSUMED;});viewport.requestApplyInsets();}
         WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setTextZoom(100);
@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
             @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest r){
                 String url=r.getUrl().toString();if(!url.startsWith(ORIGIN+"assets/"))return blocked();
                 String path=url.substring((ORIGIN+"assets/").length()).split("\\?")[0];if(path.contains("..")||path.contains("%"))return blocked();
-                try{String mime=path.endsWith(".css")?"text/css":path.endsWith(".js")?"application/javascript":path.endsWith(".json")?"application/json":path.endsWith(".webp")?"image/webp":path.endsWith(".woff2")?"font/woff2":"text/html";return new WebResourceResponse(mime,"UTF-8",getAssets().open(path));}catch(Exception e){return blocked();}
+                try{String mime=path.endsWith(".css")?"text/css":path.endsWith(".js")?"application/javascript":path.endsWith(".json")?"application/json":path.endsWith(".webp")?"image/webp":path.endsWith(".svg")?"image/svg+xml":path.endsWith(".woff2")?"font/woff2":"text/html";return new WebResourceResponse(mime,"UTF-8",getAssets().open(path));}catch(Exception e){return blocked();}
             }
             private WebResourceResponse blocked(){return new WebResourceResponse("text/plain","UTF-8",403,"Forbidden",Collections.emptyMap(),new ByteArrayInputStream(new byte[0]));}
         });

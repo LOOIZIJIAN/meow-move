@@ -79,14 +79,8 @@
 #meow-product .is-wiggle{animation:mf-wiggle 700ms var(--mf-ease)}
 @keyframes mf-wiggle{0%,100%{transform:none}15%{transform:rotate(-3deg) scale(1.04)}30%{transform:rotate(3deg) scale(1.04)}45%{transform:rotate(-2deg)}60%{transform:rotate(2deg)}75%{transform:none}}
 
-/* 06 Paper journal texture (preference, on by default) */
+/* 06 Paper grain (preference, on by default). 2.0 dropped the washi tape, stitching and highlighter. */
 #meow-product .mf-app.is-paper::before{content:'';position:fixed;inset:0;z-index:30;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .22 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-#meow-product .mf-app.is-paper .mf-report-panel{position:relative;outline:1.5px dashed #e3cea2;outline-offset:-8px}
-#meow-product .mf-app.is-paper .mf-report-panel::after{content:'';position:absolute;top:-9px;left:24px;width:70px;height:20px;transform:rotate(-5deg);background:repeating-linear-gradient(-45deg,#bfe3c9cc 0 6px,#d7efdccc 6px 12px);clip-path:polygon(0 8%,4% 0,8% 9%,12% 0,16% 8%,20% 0,80% 0,84% 9%,88% 0,92% 8%,96% 0,100% 9%,100% 92%,96% 100%,92% 91%,88% 100%,84% 92%,80% 100%,20% 100%,16% 91%,12% 100%,8% 92%,4% 100%,0 91%);box-shadow:0 1px 2px #7a603020;pointer-events:none;z-index:4}
-#meow-product .mf-app.is-paper .mf-report-panel:nth-of-type(3n)::after{left:auto;right:26px;transform:rotate(6deg);background:repeating-linear-gradient(-45deg,#ffd7a1cc 0 6px,#ffe8c4cc 6px 12px)}
-#meow-product .mf-app.is-paper .mf-report-panel:nth-of-type(3n+1)::after{background:repeating-linear-gradient(90deg,#e6d2f2cc 0 5px,#f1e5f8cc 5px 10px)}
-#meow-product .mf-app.is-paper .mf-report-panel>h3{text-decoration:underline;text-decoration-color:#ffd97a99;text-decoration-thickness:.42em;text-underline-offset:-.24em;text-decoration-skip-ink:none}
-
 /* 07 Jelly nav pill */
 #meow-product .mf-nav.has-pill button{position:relative;z-index:1}
 #meow-product .mf-nav.has-pill button[aria-pressed=true]{background:none;border-color:transparent;box-shadow:none}
