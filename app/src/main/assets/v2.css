@@ -285,3 +285,47 @@
 #meow-product .mf-app .mf-content.mf-enter{animation:mf-enter 240ms cubic-bezier(.2,.8,.2,1) both}
 @keyframes mf-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#meow-product .mf-app .mf-content.mf-enter{animation:none}#meow-product .mf-app .mf-caret{animation:none}}
+/* 2.1 · full editing, 动作整理, today's AI plan (edit-ui.js) */
+.mx-label{display:block;margin:16px 0 6px;font-size:12px;font-weight:900;color:var(--muted)}
+.mx-chips{margin:0 0 6px!important}
+.mx-chips button.mx-was{outline:2px dashed var(--faint);outline-offset:-3px;color:var(--muted)}
+.mx-note,.mx-warn{margin:6px 0 0}
+.mx-warn{color:var(--rose-ink)}
+.mx-wide{width:100%;margin-top:8px}
+.mx-wide .mf-sticker{margin-right:2px}
+.mx-tools{margin-top:22px;padding-top:6px;border-top:2px dashed var(--well)}
+.mx-danger{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;margin-top:10px;border:0!important;border-radius:17px!important;background:var(--rose-soft)!important;color:var(--rose-ink)!important;font:inherit;font-weight:900;box-shadow:none!important}
+.mx-danger:disabled{background:var(--row)!important;color:var(--faint)!important}
+.mx-list{display:grid;gap:6px;margin-top:10px;max-height:52dvh;overflow-y:auto}
+.mx-search{width:100%;box-sizing:border-box}
+.mx-row,.mx-fix{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;border-radius:16px;background:var(--row);color:var(--ink);font:inherit;text-align:left;box-sizing:border-box}
+.mx-fix{margin-top:6px}
+.mx-copy{flex:1;min-width:0;display:flex;flex-direction:column}
+.mx-copy b{font-size:14px;overflow-wrap:anywhere}
+.mx-copy small{font-size:11.5px;color:var(--muted);font-weight:700}
+.mx-act{flex-shrink:0;min-height:38px;padding:0 13px;border:0;border-radius:13px;background:var(--rose);color:#fff;font:inherit;font-size:12.5px;font-weight:900}
+.mx-act.is-soft{background:var(--sheet);color:var(--ink)}
+.mx-act:disabled{opacity:.4}
+.mx-head-actions{display:flex;gap:4px}
+.mx-plan{margin:4px 0 18px;padding:16px;border-radius:24px;background:var(--rose-soft)}
+.mx-plan-top{display:flex;align-items:center;justify-content:space-between}
+.mx-ai{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;border-radius:99px;background:var(--sheet);font-size:12px;font-weight:900;color:var(--rose-ink)}
+.mx-plan h3{margin:10px 0 2px;font-size:21px}
+.mx-plan-items{display:grid;gap:5px;margin-top:10px}
+.mx-plan-items div{display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;border-radius:14px;background:#fffbf5c7;font-size:13.5px;font-weight:800}
+.mx-plan-items div span:nth-child(2){flex:1;min-width:0}
+.mx-plan-items .mf-tile{width:32px;height:32px;border-radius:10px}
+.mx-plan-items em{font-style:normal;font-size:10.5px;color:var(--rose);margin-left:4px}
+.mx-plan-items b{color:var(--rose-ink);font-size:13px;white-space:nowrap}
+.mx-result{display:grid;gap:10px}
+.mx-ring{--p:0;width:132px;height:132px;margin:2px auto;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(closest-side,var(--sheet) 76%,transparent 77%),conic-gradient(var(--rose) calc(var(--p)*1%),var(--well) 0)}
+.mx-ring b{font-size:32px;line-height:1}
+.mx-ring small{font-size:11px;color:var(--muted);font-weight:800}
+.mx-result-list{display:grid;gap:5px}
+.mx-result-list>div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:13px;background:var(--row);font-size:13.5px;font-weight:800}
+.mx-tag{flex-shrink:0;padding:3px 9px;border-radius:99px;font-size:11.5px;font-weight:900}
+.mx-tag.is-ok{background:var(--leg);color:var(--leg-ink)}
+.mx-tag.is-part{background:var(--core);color:var(--core-ink)}
+.mx-tag.is-skip{background:var(--well);color:var(--muted)}
+.mx-paste{width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:12px}
+@media (prefers-reduced-motion:no-preference){.mx-plan{animation:mx-in .32s ease-out both}@keyframes mx-in{from{opacity:0;transform:translateY(6px)}}}

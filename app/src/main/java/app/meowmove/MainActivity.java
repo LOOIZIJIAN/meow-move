@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     static volatile boolean foreground;
     static boolean isVisible(Context context){return foreground&&((PowerManager)context.getSystemService(POWER_SERVICE)).isInteractive()&&!((KeyguardManager)context.getSystemService(KEYGUARD_SERVICE)).isKeyguardLocked();}
     private static final String ORIGIN="https://appassets.androidplatform.net/";
-    private static final int BACKUP=21,EXPORT=22,IMPORT=23;
+    private static final int BACKUP=21,EXPORT=22,IMPORT=23,PLAN=24;
     // API 28-32 uses a signature permission; the not-exported receiver flag starts at API 33.
     @android.annotation.SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override public void onCreate(Bundle state){super.onCreate(state);
@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
         web.setWebChromeClient(new WebChromeClient());web.loadUrl(ORIGIN+"assets/index.html");
         if(Build.VERSION.SDK_INT>=33)getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,()->handleBack());
     }
-    @Override protected void onResume(){super.onResume();foreground=true;try{RestReceiver.sync(this,true);}catch(Exception ignored){}Backup.kick(this);if(web!=null)web.postDelayed(()->web.evaluateJavascript("window.nativeResume&&window.nativeResume()",null),250);}
+    @Override protected void onResume(){super.onResume();foreground=true;try{RestReceiver.sync(this,true);}catch(Exception ignored){}Backup.kick(this);readPlanFile(false);if(web!=null)web.postDelayed(()->web.evaluateJavascript("window.nativeResume&&window.nativeResume()",null),250);}
     @Override protected void onDestroy(){if(restRegistered)unregisterReceiver(restChanges);super.onDestroy();}
     @Override protected void onPause(){foreground=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);super.onPause();}
     @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(intent.getBooleanExtra("openTimer",false))web.evaluateJavascript("window.openRestTimer&&window.openRestTimer()",null);}
@@ -99,6 +99,11 @@ public class MainActivity extends Activity {
             }});}
         @JavascriptInterface public void vibrate(){Vibrator v=(Vibrator)getSystemService(VIBRATOR_SERVICE);if(v!=null)v.vibrate(VibrationEffect.createOneShot(90,VibrationEffect.DEFAULT_AMPLITUDE));}
         @JavascriptInterface public void playRestSound(){runOnUiThread(()->{android.media.ToneGenerator tone=new android.media.ToneGenerator(android.media.AudioManager.STREAM_NOTIFICATION,75);tone.startTone(android.media.ToneGenerator.TONE_PROP_BEEP,350);web.postDelayed(tone::release,500);});}
+        // Today's plan: a JSON file an assistant writes in Drive, picked once and re-read on every resume.
+        @JavascriptInterface public void choosePlan(){runOnUiThread(()->picker(Intent.ACTION_OPEN_DOCUMENT,"*/*",PLAN,null));}
+        @JavascriptInterface public String planStatus(){SharedPreferences p=getSharedPreferences("plan",MODE_PRIVATE);try{return new JSONObject().put("connected",!p.getString("uri","").isEmpty()).put("name",p.getString("name","")).put("readAt",p.getLong("readAt",0)).put("error",p.getString("error","")).toString();}catch(Exception e){return "{}";}}
+        @JavascriptInterface public void readPlan(){readPlanFile(false);}
+        @JavascriptInterface public void disconnectPlan(){SharedPreferences p=getSharedPreferences("plan",MODE_PRIVATE);String uri=p.getString("uri","");if(!uri.isEmpty())try{getContentResolver().releasePersistableUriPermission(Uri.parse(uri),Intent.FLAG_GRANT_READ_URI_PERMISSION);}catch(Exception ignored){}p.edit().clear().apply();notice("已不再读取计划文件");}
         @JavascriptInterface public String backupVersions(){return Store.get(MainActivity.this).backupVersions().toString();}
         @JavascriptInterface public String recoveryVersion(String name){try{return Store.get(MainActivity.this).recoveryVersion(name);}catch(Exception e){return "null";}}
         @JavascriptInterface public boolean notificationsEnabled(){return ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).areNotificationsEnabled();}
@@ -110,8 +115,11 @@ public class MainActivity extends Activity {
         if(request==BACKUP){Uri uri=intent.getData();int flags=intent.getFlags()&(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             try{if((flags&Intent.FLAG_GRANT_WRITE_URI_PERMISSION)==0)throw new SecurityException();if((flags&Intent.FLAG_GRANT_READ_URI_PERMISSION)!=0)getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);else getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);Backup.prefs(this).edit().putString("uri",uri.toString()).putBoolean("drive",uri.getAuthority()!=null&&uri.getAuthority().contains("com.google.android.apps.docs")).putString("name",name(uri)).putBoolean("pending",true).putString("error","").apply();Backup.schedule(this);Backup.kick(this);notice("自动备份已启用");}catch(Exception e){notice("该位置不支持持续写入，请重新选择备份文件");}
         }
+        if(request==PLAN){Uri uri=intent.getData();try{getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION);getSharedPreferences("plan",MODE_PRIVATE).edit().putString("uri",uri.toString()).putString("name",name(uri)).putString("error","").apply();readPlanFile(true);}catch(Exception e){notice("这个位置不能持续读取，请从 Google Drive 选择计划文件");}}
         if(request==EXPORT){Uri uri=intent.getData();String path=getSharedPreferences("export",MODE_PRIVATE).getString("path","");Backup.IO.execute(()->{try(InputStream in=new FileInputStream(path);OutputStream out=getContentResolver().openOutputStream(uri,"wt")){if(out==null)throw new IOException();byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1)out.write(b,0,n);notice("已保存导出文件");}catch(Exception e){notice("文件未保存，请重试");}});}
         if(request==IMPORT){ArrayList<Uri> uris=new ArrayList<>();if(intent.getClipData()!=null){for(int n=0;n<Math.min(100,intent.getClipData().getItemCount());n++)uris.add(intent.getClipData().getItemAt(n).getUri());}else uris.add(intent.getData());Backup.IO.execute(()->{try{JSONArray files=new JSONArray();for(Uri uri:uris){String text=Store.read(getContentResolver().openInputStream(uri),20*1024*1024);byte[] digest=MessageDigest.getInstance("SHA-256").digest(text.getBytes(StandardCharsets.UTF_8));StringBuilder h=new StringBuilder();for(byte v:digest)h.append(String.format("%02x",v));files.put(new JSONObject().put("name",name(uri)).put("text",text).put("id","note-"+h));}event(new JSONObject().put("type","import").put("files",files));}catch(Exception e){notice("无法读取文件，请选择 Markdown 笔记或喵练 JSON 备份");}});}
     }
+    private void readPlanFile(boolean fresh){SharedPreferences p=getSharedPreferences("plan",MODE_PRIVATE);String uri=p.getString("uri","");if(uri.isEmpty())return;
+        Backup.IO.execute(()->{try{String text=Store.read(getContentResolver().openInputStream(Uri.parse(uri)),1024*1024);p.edit().putLong("readAt",System.currentTimeMillis()).putString("error","").apply();event(new JSONObject().put("type","plan").put("text",text).put("fresh",fresh));}catch(Exception e){p.edit().putString("error","计划文件暂时读不到，请检查网络或重新选择").apply();if(fresh)notice("计划文件读不到，请重新选择");}});}
     private String name(Uri uri){try(Cursor c=getContentResolver().query(uri,new String[]{OpenableColumns.DISPLAY_NAME},null,null,null)){return c!=null&&c.moveToFirst()?c.getString(0):"meow-move-backup.json";}catch(Exception e){return "meow-move-backup.json";}}
 }
