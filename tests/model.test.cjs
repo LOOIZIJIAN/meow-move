@@ -214,3 +214,10 @@ test('workout timing comes from recorded timestamps or the time in an imported n
   assert.deepEqual(M.timing({ title: '肩训练', startedAt: start, endedAt: end }), { start: '18:02', end: '19:14', minutes: 72, fromNote: false });
   assert.equal(M.timing({ title: '肩训练', startedAt: null, endedAt: null }), null);
 });
+
+test('display label drops the date and time a note title carries', () => {
+  assert.equal(M.label({ title: '练背 27/10/2000 1930-2040' }), '练背');
+  assert.equal(M.label({ title: '练胸 2/10/2000 19:37' }), '练胸');
+  assert.equal(M.label({ title: '腿日 5x5' }), '腿日 5x5');
+  assert.equal(M.label({ title: '12/1/2000', muscles: ['背'] }), '背训练');
+});
